@@ -325,46 +325,26 @@ def component_plot_DualAxis_Chart(df, x_col, y_col_bar, y_col_line, name):
         st.error(f"Erro ao converter datas: {e}")
         return
 
+    # DEBUG: Mostrar dados para validar
+    #st.write(df_sorted[[x_col, y_col_bar, y_col_line]].head())
+
     options = {
         "tooltip": {
             "trigger": "axis",
-            "axisPointer": {
-                "type": "cross"
-            }
+            "axisPointer": {"type": "cross"}
         },
         "toolbox": {
-            "feature": {
-                "saveAsImage": {},
-                "restore": {},
-                "dataView": {"readOnly": True}
-            }
+            "feature": {"saveAsImage": {}, "restore": {}, "dataView": {"readOnly": True}}
         },
-        "legend": {
-            "data": [y_col_bar, y_col_line],
-            "top": 30
-        },
+        "legend": {"data": [y_col_bar, y_col_line], "top": 30},
         "xAxis": {
             "type": "category",
             "data": df_sorted[x_col].tolist(),
             "axisLabel": {"rotate": 45}
         },
         "yAxis": [
-            {
-                "type": "value",
-                "name": y_col_bar,
-                "position": "left",
-                "axisLabel": {
-                    "formatter": '{value}'
-                }
-            },
-            {
-                "type": "value",
-                "name": y_col_line,
-                "position": "right",
-                "axisLabel": {
-                    "formatter": '{value} dias'
-                }
-            }
+            {"type": "value", "name": y_col_bar, "position": "left", "axisLabel": {"formatter": "{value}"}},
+            {"type": "value", "name": y_col_line, "position": "right", "axisLabel": {"formatter": "{value} dias"}}
         ],
         "series": [
             {
@@ -385,7 +365,7 @@ def component_plot_DualAxis_Chart(df, x_col, y_col_bar, y_col_line, name):
         ]
     }
 
-    st_echarts(options=options, height="500px")
+    st_echarts(options=options, height="500px", key="dual_axis_chart")
 
 
 def component_custom_card(title, value, subtitle=""):
