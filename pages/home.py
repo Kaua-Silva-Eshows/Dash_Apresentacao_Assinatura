@@ -1,4 +1,5 @@
 import streamlit as st
+from menu.net_costs import NetCost
 from menu.opportunity_audience import OpportunityAudience
 from menu.opportunity_creation import OpportunityCreation
 from utils.components import *
@@ -28,7 +29,7 @@ def render():
     col6, col7, col8, = st.columns([3.4,0.2,0.4])
     col8.button(label="Atualizar", on_click = st.cache_data.clear)
     
-    tbs = st.tabs(["Publico de Oportunidades", "Criação de Oportunidades"])
+    tbs = st.tabs(["Publico de Oportunidades", "Criação de Oportunidades", "Valores Liquidos"])
     
     with tbs[0]:
         page = OpportunityAudience()
@@ -36,8 +37,8 @@ def render():
     with tbs[1]:
         page = OpportunityCreation()
     
-    # with tbs[2]:
-    #     page = ()
+    with tbs[2]:
+        page = NetCost()
 
 if __name__ == "__main__":
     if 'jwt_token' not in st.session_state:

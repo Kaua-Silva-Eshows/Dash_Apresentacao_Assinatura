@@ -316,56 +316,35 @@ def component_plot_DualAxis_Chart(df, x_col, y_col_bar, y_col_line, name):
     )
 
     df_sorted = df.copy()
-
     try:
-        df_sorted[x_col] = pd.to_datetime(df_sorted[x_col])
+        df_sorted[x_col] = pd.to_datetime(df_sorted[x_col], format='%m/%Y')
         df_sorted = df_sorted.sort_values(by=x_col)
-        df_sorted[x_col] = df_sorted[x_col].dt.strftime('%m/%Y')
+        # Não converter para string para manter o datetime (melhor para ordenação)
     except Exception as e:
         st.error(f"Erro ao converter datas: {e}")
         return
 
-    # DEBUG: Mostrar dados para validar
-    #st.write(df_sorted[[x_col, y_col_bar, y_col_line]].head())
+    # Para o eixo x como strings formatadas:
+    x_labels = df_sorted[x_col].dt.strftime('%m/%Y').tolist()
 
     options = {
-        "tooltip": {
-            "trigger": "axis",
-            "axisPointer": {"type": "cross"}
-        },
-        "toolbox": {
-            "feature": {"saveAsImage": {}, "restore": {}, "dataView": {"readOnly": True}}
-        },
+        "tooltip": {"trigger": "axis", "axisPointer": {"type": "cross"}},
+        "toolbox": {"feature": {"saveAsImage": {}, "restore": {}, "dataView": {"readOnly": True}}},
         "legend": {"data": [y_col_bar, y_col_line], "top": 30},
-        "xAxis": {
-            "type": "category",
-            "data": df_sorted[x_col].tolist(),
-            "axisLabel": {"rotate": 45}
-        },
+        "xAxis": {"type": "category", "data": x_labels, "axisLabel": {"rotate": 45}},
         "yAxis": [
             {"type": "value", "name": y_col_bar, "position": "left", "axisLabel": {"formatter": "{value}"}},
             {"type": "value", "name": y_col_line, "position": "right", "axisLabel": {"formatter": "{value} dias"}}
         ],
         "series": [
-            {
-                "name": y_col_bar,
-                "type": "bar",
-                "yAxisIndex": 0,
-                "data": df_sorted[y_col_bar].fillna(0).tolist(),
-                "barWidth": "40%"
-            },
-            {
-                "name": y_col_line,
-                "type": "line",
-                "yAxisIndex": 1,
-                "smooth": True,
-                "lineStyle": {"width": 3},
-                "data": df_sorted[y_col_line].fillna(0).tolist()
-            }
+            {"name": y_col_bar, "type": "bar", "yAxisIndex": 0, "data": df_sorted[y_col_bar].fillna(0).tolist(), "barWidth": "40%"},
+            {"name": y_col_line, "type": "line", "yAxisIndex": 1, "smooth": True, "lineStyle": {"width": 3}, "data": df_sorted[y_col_line].fillna(0).tolist()}
         ]
     }
 
-    st_echarts(options=options, height="500px", key="dual_axis_chart")
+    # Use chave dinâmica para forçar atualização
+    key = f"dual_axis_chart_{df_sorted[x_col].max()}"
+    st_echarts(options=options, height="500px", key=key)
 
 
 def component_custom_card(title, value, subtitle=""):
