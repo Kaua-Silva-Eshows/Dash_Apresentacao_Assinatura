@@ -415,8 +415,8 @@ def component_plot_dual_axis_bar_line(df, x_col, y_col_bar, y_col_line, name='')
 
     # Converter colunas para float (evita problemas com Decimal)
     df_sorted = df.copy()
-    df_sorted[y_col_bar] = df_sorted[y_col_bar].apply(float)
-    df_sorted[y_col_line] = df_sorted[y_col_line].apply(float)
+    df_sorted.loc[:, y_col_bar] = df_sorted[y_col_bar].astype(float)
+    df_sorted.loc[:, y_col_line] = df_sorted[y_col_line].astype(float)
 
     options = {
         "tooltip": {

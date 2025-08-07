@@ -9,10 +9,11 @@ from utils.functions import *
 def BuildNetCost(liquidValuePerTraining):
     #st.write(liquidValuePerTraining)
 
-    liquidValuePerTraining = liquidValuePerTraining[liquidValuePerTraining['INTEGRANTES'] < '5']
+    liquidValuePerTraining = liquidValuePerTraining[~liquidValuePerTraining['INTEGRANTES'].isin(['5 pessoas', '6 pessoas'])]
+    liquidValuePerTraining = liquidValuePerTraining.copy()
     liquidValuePerTraining['MEDIA POR FORMACAO'] = liquidValuePerTraining['MEDIA POR FORMACAO'].astype(float)
     liquidValuePerTraining['Media de horas por show'] = liquidValuePerTraining['Media de horas por show'].astype(float)
-    
+    #st.write(liquidValuePerTraining)
     row_training = st.columns(2)
     with row_training[0]:
         component_plot_dual_axis_bar_line(liquidValuePerTraining,x_col='FORMAÇÃO',y_col_bar='OPORTUNIDADES',y_col_line='Valor por H',name='Oportunidade e Valor por Hora por Formação')
