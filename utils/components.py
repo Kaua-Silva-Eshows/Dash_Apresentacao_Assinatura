@@ -225,9 +225,9 @@ def component_plot_Stacked_Line_Chart(df, x_col, y_cols, name):
         df_sorted = df.copy()
 
         try:
-            df_sorted[x_col] = pd.to_datetime(df_sorted[x_col])
+            df_sorted[x_col] = pd.to_datetime(df_sorted[x_col], format='%m/%Y')
             df_sorted = df_sorted.sort_values(by=x_col)
-            # Formata para mês/ano
+            # Formata para mês/ano novamente (string) para o eixo X
             df_sorted[x_col] = df_sorted[x_col].dt.strftime('%m/%Y')
         except Exception as e:
             st.error(f"Erro ao converter datas: {e}")
