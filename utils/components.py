@@ -216,7 +216,7 @@ def component_plotDataframe(df, name, num_columns=[], percent_columns=[], df_det
     filtered_df = filtered_df.drop(columns=[col for col in filtered_df.columns if col.endswith('_NUM')], errors='ignore')
     return filtered_df, len(filtered_df)
 
-def component_plot_Stacked_Line_Chart(df, x_col, y_cols, name):
+def component_plot_Stacked_Line_Chart(df, x_col, y_cols, name, key):
         st.markdown(
             f"<h5 style='text-align: center; background-color: #ffb131; padding: 0.1em;'>{name}</h5>",
             unsafe_allow_html=True
@@ -306,10 +306,9 @@ def component_plot_Stacked_Line_Chart(df, x_col, y_cols, name):
                 for col in y_cols
             ]
         }
+        st_echarts(options=options, height="500px", key=key)
 
-        st_echarts(options=options, height="450px")
-
-def component_plot_DualAxis_Chart(df, x_col, y_col_bar, y_col_line, name):
+def component_plot_DualAxis_Chart(df, x_col, y_col_bar, y_col_line, name, key):
     st.markdown(f"<h5 style='text-align: center; background-color: #ffb131; padding: 0.1em;'>{name}</h5>",unsafe_allow_html=True)
 
     df_sorted = df.copy()
@@ -340,10 +339,9 @@ def component_plot_DualAxis_Chart(df, x_col, y_col_bar, y_col_line, name):
     }
 
     # Use chave dinâmica para forçar atualização
-    key = f"DualAxis_Chart{df_sorted[x_col].max()}"
     st_echarts(options=options, height="500px", key=key)
 
-def component_plot_dual_axis_line_chart(df, x_col, y_col1, y_col2, y_label1, y_label2, name):
+def component_plot_dual_axis_line_chart(df, x_col, y_col1, y_col2, y_label1, y_label2, name, key):
     st.markdown(f"<h5 style='text-align: center; background-color: #ffb131; padding: 0.1em;'>{name}</h5>",unsafe_allow_html=True)
 
     df_sorted = df.copy()
@@ -407,10 +405,9 @@ def component_plot_dual_axis_line_chart(df, x_col, y_col1, y_col2, y_label1, y_l
         ]
     }
 
-    key = f"axis_line_chart{df_sorted[x_col].max()}"
     st_echarts(options=options, height="500px", key=key)
 
-def component_plot_dual_axis_bar_line(df, x_col, y_col_bar, y_col_line, name=''):
+def component_plot_dual_axis_bar_line(df, x_col, y_col_bar, y_col_line, name, key):
     st.markdown(f"<h5 style='text-align: center; background-color: #ffb131; padding: 0.1em;'>{name}</h5>",unsafe_allow_html=True)
 
     # Converter colunas para float (evita problemas com Decimal)
@@ -469,7 +466,6 @@ def component_plot_dual_axis_bar_line(df, x_col, y_col_bar, y_col_line, name='')
         ]
     }
 
-    key = f"axis_bar_line{df_sorted[x_col].max()}"
     st_echarts(options=options, height="500px", key=key)
 
 def component_custom_card(title, value, subtitle=""):

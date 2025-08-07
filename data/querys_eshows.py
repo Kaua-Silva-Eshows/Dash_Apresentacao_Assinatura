@@ -130,8 +130,8 @@ GROUP BY YEAR(O.DATA_INICIO)
 ORDER BY YEAR(O.DATA_INICIO);
 """)
 
-@st.cache_data
 #Valor liquido por formação
+@st.cache_data
 def liquid_value_per_training():
 	return get_dataframe_from_query("""
 SELECT 

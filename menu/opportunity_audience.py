@@ -10,7 +10,7 @@ def BuildOpportunityAudience(avaregeCandidatesOpportunityMonth, avaregeCandidate
     with st.expander("Candidaturas Mensais"): 
         avaregeCandidatesOpportunityMonth_graph, len_df = component_plotDataframe(avaregeCandidatesOpportunityMonth, "Media de Candidatos por Oportunidade Mensal", key="avaregeCandidatesOpportunityMonth_key")
 
-    component_plot_Stacked_Line_Chart(avaregeCandidatesOpportunityMonth_graph, "Data", ["Media por Vaga", "Total de Oportunidades", "Total de Candidaturas"], "Candidaturas Mensais Grafico")
+    component_plot_Stacked_Line_Chart(avaregeCandidatesOpportunityMonth_graph, "Data", ["Media por Vaga", "Total de Oportunidades", "Total de Candidaturas"], "Candidaturas Mensais Grafico", key="avaregeCandidatesOpportunityMonth_graph_key")
 
     with st.expander("Candidaturas Semanais"):
         df_copy, len_df = component_plotDataframe(avaregeCandidatesOpportunityWeek, "Media de Candidatos por Oportunidade Semanal", key="avaregeCandidatesOpportunityWeek_key")
@@ -48,7 +48,7 @@ def BuildOpportunityAudience(avaregeCandidatesOpportunityMonth, avaregeCandidate
             low_candidates_top_accepts = avaregeCandidatesByArtist.loc[filtro].sort_values(by=['Média de Candidaturas por Mês', 'Média Aceite por Mês'],ascending=[False, True]).head(10)
 
             low_candidates_top_accepts = low_candidates_top_accepts[['ARTISTA', 'Média de Candidaturas por Mês', 'Média Aceite por Mês']]
-            component_plotDataframe(low_candidates_top_accepts, "Artistas com menor Med. Candidaturas e maior Med. Aceite", key="top_many_low_accept")
+            component_plotDataframe(low_candidates_top_accepts, "Artistas com menor Med. Candidaturas e maior Med. Aceite")
 
     #Artistas com menor Media de Candidaturas e maior Media de Aceite
 
