@@ -25,7 +25,7 @@ def BuildOpportunityCreation(avaregeOpportunityCreatedMonth, avaregeOpportunityC
 
     
     for col in avaregeOpportunityCreatedMonth.columns:avaregeOpportunityCreatedMonth[col] = avaregeOpportunityCreatedMonth[col].map(lambda x: float(x) if isinstance(x, Decimal) else x)
-    component_plot_DualAxis_Chart(avaregeOpportunityCreatedMonth, x_col='Mes/Ano', y_col_bar='Oportunidades', y_col_line='Media em DIAS', name='Total de Oportunidades vs Média de Criação', key="avaregeOpportunityCreatedMonth_key")
+    component_plot_DualAxis_Chart(avaregeOpportunityCreatedMonth, x_col='Mes/Ano', y_col_bar='Oportunidades', y_col_line='Media em DIAS', name='Total de Oportunidades vs Média de Criação')
 
 
 
