@@ -1,3 +1,4 @@
+import hashlib
 import streamlit as st
 from st_aggrid import GridUpdateMode, JsCode, StAggridTheme
 from st_aggrid import AgGrid, GridOptionsBuilder
@@ -216,113 +217,55 @@ def component_plotDataframe(df, name, num_columns=[], percent_columns=[], df_det
     filtered_df = filtered_df.drop(columns=[col for col in filtered_df.columns if col.endswith('_NUM')], errors='ignore')
     return filtered_df, len(filtered_df)
 
+def generate_chart_key(*args):
+    return hashlib.md5("_".join(map(str, args)).encode()).hexdigest()
+
 def component_plot_Stacked_Line_Chart(df, x_col, y_cols, name):
-        chart_key = f"{x_col}_{y_cols}_{name}_"
-        st.markdown(
-            f"<h5 style='text-align: center; background-color: #ffb131; padding: 0.1em;'>{name}</h5>",
-            unsafe_allow_html=True
-        )
-
-        df_sorted = df.copy()
-
-        try:
-            df_sorted[x_col] = pd.to_datetime(df_sorted[x_col], format='%m/%Y')
-            df_sorted = df_sorted.sort_values(by=x_col)
-            # Formata para mês/ano novamente (string) para o eixo X
-            df_sorted[x_col] = df_sorted[x_col].dt.strftime('%m/%Y')
-        except Exception as e:
-            st.error(f"Erro ao converter datas: {e}")
-            return
-
-        options = {
-            "title": None,
-            "tooltip": {
-    "trigger": "axis",
-    "axisPointer": {
-        "type": "cross",
-        "label": {"backgroundColor": "#6a7985"}
-    },
-    "formatter": None
-},
-            "legend": {
-                "data": y_cols,
-                "top": 30,
-                "selectedMode": "multiple",  # Permite selecionar/desselecionar séries
-                "textStyle": {"color": "#555"}
-            },
-            "grid": {"left": "3%", "right": "4%", "bottom": "5%", "containLabel": True},
-            "toolbox": {
-                "feature": {
-                    "saveAsImage": {},
-                    "dataZoom": {
-                        "yAxisIndex": "none"
-                    },
-                    "restore": {}
-                }
-            },
-            "dataZoom": [
-                {
-                    "type": "slider",
-                    "start": 0,
-                    "end": 100,
-                    "bottom": 0,
-                    "height": 20,
-                    "handleSize": "100%",
-                    "handleStyle": {"color": "#ffb131"},
-                    "backgroundColor": "#f2f2f2",
-                    "borderColor": "#ddd"
-                },
-                {
-                    "type": "inside",
-                    "start": 0,
-                    "end": 100
-                }
-            ],
-            "xAxis": {
-                "type": "category",
-                "boundaryGap": True,
-                "data": df_sorted[x_col].tolist(),
-                "axisLine": {"lineStyle": {"color": "#999"}},
-                "axisLabel": {"rotate": 45, "formatter": "{value}"}
-            },
-            "yAxis": [
-                {
-                    "type": "value",
-                    "name": "Total",
-                    "position": "left",
-                    "axisLine": {"lineStyle": {"color": "#999"}},
-                    "splitLine": {"lineStyle": {"type": "dashed", "color": "#eee"}}
-                }
-            ],
-            "series": [
-                {
-                    "name": col,
-                    "type": "line",
-                    "stack": "Total",
-                    "smooth": True,
-                    "lineStyle": {"width": 3},
-                    "areaStyle": {},  # Preenche área sob a curva para efeito empilhado visual
-                    "data": [float(x) for x in df_sorted[col].fillna(0)]
-                }
-                for col in y_cols
-            ]
-        }
-        st_echarts(options=options, height="500px", key=chart_key)
-
-def component_plot_DualAxis_Chart(df, x_col, y_col_bar, y_col_line, name):
-    chart_key = f"{x_col}_{y_col_bar}_{name}_"
-    st.markdown(f"<h5 style='text-align: center; background-color: #ffb131; padding: 0.1em;'>{name}</h5>",unsafe_allow_html=True)
+    chart_key = generate_chart_key(x_col, tuple(y_cols) if isinstance(y_cols, list) else y_cols, name)
+    st.markdown(f"<h5 style='text-align: center; background-color: #ffb131; padding: 0.1em;'>{name}</h5>", unsafe_allow_html=True)
 
     df_sorted = df.copy()
-    try:
-        df_sorted[x_col] = pd.to_datetime(df_sorted[x_col], format='%m/%Y')
-        df_sorted = df_sorted.sort_values(by=x_col)
-        # Não converter para string para manter o datetime (melhor para ordenação)
-    except Exception as e:
-        st.error(f"Erro ao converter datas: {e}")
+    df_sorted[x_col] = pd.to_datetime(df_sorted[x_col], errors='coerce', format='%m/%Y')
+    df_sorted = df_sorted.dropna(subset=[x_col])
+
+    if df_sorted.empty:
+        st.warning(f"Sem dados válidos para {name}")
         return
 
-    # Para o eixo x como strings formatadas:
+    df_sorted = df_sorted.sort_values(by=x_col)
+    df_sorted[x_col] = df_sorted[x_col].dt.strftime('%m/%Y')
+
+    options = {
+        "title": None,
+        "tooltip": {"trigger": "axis", "axisPointer": {"type": "cross", "label": {"backgroundColor": "#6a7985"}}},
+        "legend": {"data": y_cols, "top": 30, "selectedMode": "multiple", "textStyle": {"color": "#555"}},
+        "grid": {"left": "3%", "right": "4%", "bottom": "5%", "containLabel": True},
+        "toolbox": {"feature": {"saveAsImage": {}, "dataZoom": {"yAxisIndex": "none"}, "restore": {}}},
+        "dataZoom": [{"type": "slider", "start": 0, "end": 100, "bottom": 0, "height": 20}, {"type": "inside", "start": 0, "end": 100}],
+        "xAxis": {"type": "category", "boundaryGap": True, "data": df_sorted[x_col].tolist(), "axisLabel": {"rotate": 45}},
+        "yAxis": [{"type": "value", "name": "Total"}],
+        "series": [
+            {"name": col, "type": "line", "stack": "Total", "smooth": True, "lineStyle": {"width": 3}, "areaStyle": {},
+             "data": df_sorted[col].fillna(0).astype(float).tolist()}
+            for col in y_cols
+        ]
+    }
+    st_echarts(options=options, height="500px", key=chart_key)
+
+
+def component_plot_DualAxis_Chart(df, x_col, y_col_bar, y_col_line, name):
+    chart_key = generate_chart_key(x_col, y_col_bar, y_col_line, name)
+    st.markdown(f"<h5 style='text-align: center; background-color: #ffb131; padding: 0.1em;'>{name}</h5>", unsafe_allow_html=True)
+
+    df_sorted = df.copy()
+    df_sorted[x_col] = pd.to_datetime(df_sorted[x_col], errors='coerce', format='%m/%Y')
+    df_sorted = df_sorted.dropna(subset=[x_col])
+
+    if df_sorted.empty:
+        st.warning(f"Sem dados válidos para {name}")
+        return
+
+    df_sorted = df_sorted.sort_values(by=x_col)
     x_labels = df_sorted[x_col].dt.strftime('%m/%Y').tolist()
 
     options = {
@@ -331,147 +274,69 @@ def component_plot_DualAxis_Chart(df, x_col, y_col_bar, y_col_line, name):
         "legend": {"data": [y_col_bar, y_col_line], "top": 30},
         "xAxis": {"type": "category", "data": x_labels, "axisLabel": {"rotate": 45}},
         "yAxis": [
-            {"type": "value", "name": y_col_bar, "position": "left", "axisLabel": {"formatter": "{value}"}},
+            {"type": "value", "name": y_col_bar, "position": "left"},
             {"type": "value", "name": y_col_line, "position": "right", "axisLabel": {"formatter": "{value} dias"}}
         ],
         "series": [
-            {"name": y_col_bar, "type": "bar", "yAxisIndex": 0, "data": df_sorted[y_col_bar].fillna(0).tolist(), "barWidth": "40%"},
-            {"name": y_col_line, "type": "line", "yAxisIndex": 1, "smooth": True, "lineStyle": {"width": 3}, "data": df_sorted[y_col_line].fillna(0).tolist()}
+            {"name": y_col_bar, "type": "bar", "yAxisIndex": 0, "data": df_sorted[y_col_bar].fillna(0).astype(float).tolist(), "barWidth": "40%"},
+            {"name": y_col_line, "type": "line", "yAxisIndex": 1, "smooth": True, "lineStyle": {"width": 3},
+             "data": df_sorted[y_col_line].fillna(0).astype(float).tolist()}
         ]
     }
-
-    # Use chave dinâmica para forçar atualização
     st_echarts(options=options, height="500px", key=chart_key)
 
+
 def component_plot_dual_axis_line_chart(df, x_col, y_col1, y_col2, y_label1, y_label2, name):
-    chart_key = f"{x_col}_{y_col1}_{name}_"
-    st.markdown(f"<h5 style='text-align: center; background-color: #ffb131; padding: 0.1em;'>{name}</h5>",unsafe_allow_html=True)
+    chart_key = generate_chart_key(x_col, y_col1, y_col2, name)
+    st.markdown(f"<h5 style='text-align: center; background-color: #ffb131; padding: 0.1em;'>{name}</h5>", unsafe_allow_html=True)
 
     df_sorted = df.copy()
     categorias = df_sorted[x_col].tolist()
-    dados1 = df_sorted[y_col1].apply(float).tolist()
-    dados2 = df_sorted[y_col2].apply(float).tolist()
+    dados1 = df_sorted[y_col1].fillna(0).astype(float).tolist()
+    dados2 = df_sorted[y_col2].fillna(0).astype(float).tolist()
 
-    # Cores derivadas do laranja #ffb131, com variações para distinguir as duas linhas
-    cor1 = "#ffb131"        # laranja principal
-    cor2 = "#4200db"        # azul mais escuro para contraste
+    cor1, cor2 = "#ffb131", "#4200db"
 
     options = {
         "tooltip": {"trigger": "axis"},
         "legend": {"data": [y_label1, y_label2], "top": 30},
         "grid": {"left": "5%", "right": "5%", "bottom": "10%", "containLabel": True},
-        "xAxis": {
-            "type": "category",
-            "data": categorias,
-            "axisLine": {"lineStyle": {"color": "#999"}},
-            "axisLabel": {"rotate": 0}
-        },
+        "xAxis": {"type": "category", "data": categorias},
         "yAxis": [
-            {
-                "type": "value",
-                "name": y_label1,
-                "position": "left",
-                "axisLine": {"lineStyle": {"color": cor1}},
-                "splitLine": {"lineStyle": {"type": "dashed", "color": "#eee"}}
-            },
-            {
-                "type": "value",
-                "name": y_label2,
-                "position": "right",
-                "axisLine": {"lineStyle": {"color": cor2}},
-                "splitLine": {"show": False}
-            }
+            {"type": "value", "name": y_label1, "position": "left", "axisLine": {"lineStyle": {"color": cor1}}},
+            {"type": "value", "name": y_label2, "position": "right", "axisLine": {"lineStyle": {"color": cor2}}}
         ],
         "series": [
-            {
-                "name": y_label1,
-                "type": "line",
-                "data": dados1,
-                "yAxisIndex": 0,
-                "smooth": True,
-                "lineStyle": {"color": cor1, "width": 3},
-                "symbol": "circle",
-                "symbolSize": 8,
-                "itemStyle": {"color": cor1}
-            },
-            {
-                "name": y_label2,
-                "type": "line",
-                "data": dados2,
-                "yAxisIndex": 1,
-                "smooth": True,
-                "lineStyle": {"color": cor2, "width": 3},
-                "symbol": "circle",
-                "symbolSize": 8,
-                "itemStyle": {"color": cor2}
-            }
+            {"name": y_label1, "type": "line", "data": dados1, "yAxisIndex": 0, "smooth": True, "lineStyle": {"color": cor1, "width": 3}},
+            {"name": y_label2, "type": "line", "data": dados2, "yAxisIndex": 1, "smooth": True, "lineStyle": {"color": cor2, "width": 3}}
         ]
     }
-
     st_echarts(options=options, height="500px", key=chart_key)
+
 
 def component_plot_dual_axis_bar_line(df, x_col, y_col_bar, y_col_line, name):
-    chart_key = f"{x_col}_{y_col_bar}_{name}_"
-    st.markdown(f"<h5 style='text-align: center; background-color: #ffb131; padding: 0.1em;'>{name}</h5>",unsafe_allow_html=True)
+    chart_key = generate_chart_key(x_col, y_col_bar, y_col_line, name)
+    st.markdown(f"<h5 style='text-align: center; background-color: #ffb131; padding: 0.1em;'>{name}</h5>", unsafe_allow_html=True)
 
-    # Converter colunas para float (evita problemas com Decimal)
     df_sorted = df.copy()
-    df_sorted.loc[:, y_col_bar] = df_sorted[y_col_bar].astype(float)
-    df_sorted.loc[:, y_col_line] = df_sorted[y_col_line].astype(float)
+    df_sorted[y_col_bar] = df_sorted[y_col_bar].fillna(0).astype(float)
+    df_sorted[y_col_line] = df_sorted[y_col_line].fillna(0).astype(float)
 
     options = {
-        "tooltip": {
-            "trigger": "axis",
-            "axisPointer": {"type": "cross"}
-        },
-        "toolbox": {
-            "feature": {"saveAsImage": {}, "restore": {}, "dataView": {"readOnly": True}}
-        },
+        "tooltip": {"trigger": "axis", "axisPointer": {"type": "cross"}},
+        "toolbox": {"feature": {"saveAsImage": {}, "restore": {}, "dataView": {"readOnly": True}}},
         "legend": {"data": [y_col_bar, y_col_line], "top": 30},
-        "xAxis": {
-            "type": "category",
-            "data": df_sorted[x_col].tolist(),
-            "axisLabel": {"rotate": 0}
-        },
+        "xAxis": {"type": "category", "data": df_sorted[x_col].tolist()},
         "yAxis": [
-            {
-                "type": "value",
-                "name": y_col_bar,
-                "position": "left",
-                "axisLabel": {"formatter": "{value}"}
-            },
-            {
-                "type": "value",
-                "name": y_col_line,
-                "position": "right",
-                "axisLabel": {"formatter": f"R$ {{value}}"}
-            }
+            {"type": "value", "name": y_col_bar, "position": "left"},
+            {"type": "value", "name": y_col_line, "position": "right", "axisLabel": {"formatter": "R$ {value}"}}
         ],
         "series": [
-            {
-                "name": y_col_bar,
-                "type": "bar",
-                "yAxisIndex": 0,
-                "data": df_sorted[y_col_bar].tolist(),
-                "barWidth": "40%",
-                "itemStyle": {"color": "#ffb131"}
-            },
-            {
-                "name": y_col_line,
-                "type": "line",
-                "yAxisIndex": 1,
-                "smooth": True,
-                "lineStyle": {"width": 3, "color": "#4200db"},
-                "data": df_sorted[y_col_line].tolist(),
-                "symbol": "circle",
-                "symbolSize": 8,
-                "itemStyle": {"color": "#4200db"}
-            }
+            {"name": y_col_bar, "type": "bar", "yAxisIndex": 0, "data": df_sorted[y_col_bar].tolist(), "barWidth": "40%", "itemStyle": {"color": "#ffb131"}},
+            {"name": y_col_line, "type": "line", "yAxisIndex": 1, "smooth": True, "lineStyle": {"width": 3, "color": "#4200db"}, "data": df_sorted[y_col_line].tolist()}
         ]
     }
-
     st_echarts(options=options, height="500px", key=chart_key)
-
 def component_custom_card(title, value, subtitle=""):
         card_html = f"""<div style="
     background: #ffb131;

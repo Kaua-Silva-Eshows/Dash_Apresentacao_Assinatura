@@ -14,9 +14,22 @@ def BuildNetCost(liquidValuePerTraining):
     liquidValuePerTraining['MEDIA POR FORMACAO'] = liquidValuePerTraining['MEDIA POR FORMACAO'].astype(float)
     liquidValuePerTraining['Media de horas por show'] = liquidValuePerTraining['Media de horas por show'].astype(float)
     #st.write(liquidValuePerTraining)
+    # row_cards = st.columns(2)
+    # with row_cards[0]:
+        #component_custom_card(
+        #     title="Valor Médio por Formação",
+        #     value=f"R$ {liquidValuePerTraining['MEDIA POR FORMACAO'].mean():,.2f}",
+        #     subtitle="Média de valor por formação"
+        # )
     row_training = st.columns(2)
     with row_training[0]:
-        component_plot_dual_axis_bar_line(liquidValuePerTraining,x_col='FORMAÇÃO',y_col_bar='OPORTUNIDADES',y_col_line='Valor por H',name='Oportunidade e Valor por Hora por Formação')
+        component_plot_dual_axis_bar_line(
+    liquidValuePerTraining,
+    x_col='FORMAÇÃO',
+    y_col_bar='OPORTUNIDADES',
+    y_col_line='Valor por H',
+    name='Oportunidade e Valor por Hora por Formação'
+)
     with row_training[1]:
         component_plot_dual_axis_line_chart(liquidValuePerTraining,x_col='FORMAÇÃO',y_col1='MEDIA POR FORMACAO',y_col2='Media de horas por show',y_label1='Valor Médio (R$)',y_label2='Horas Médias',name='Comparação de Valor Médio e Horas Médias por Formação')
 class NetCost(Page):
