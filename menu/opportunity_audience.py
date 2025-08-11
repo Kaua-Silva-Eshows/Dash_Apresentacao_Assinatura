@@ -32,9 +32,9 @@ def BuildOpportunityAudience(avaregeCandidatesOpportunityMonth, avaregeCandidate
     row_card = st.columns([1,2,2,1])
     with row_card[1]:
         vlaue = function_format_number(avaregeCandidatesByArtist['Candidaturas do Artista'].sum())
-        component_custom_card("T. de Candidaturas", vlaue, "candidaturas")
+        component_custom_card("T. de Candidaturas", vlaue, "Candidaturas")
     with row_card[2]:
-        component_custom_card("Artitistas Distintos", avaregeCandidatesByArtist['ARTISTA'].nunique(), "artistas_distintos")
+        component_custom_card("Artitistas Distintos", avaregeCandidatesByArtist['ARTISTA'].nunique(), "Artistas Distintos")
 
 
     component_plotDataframe(avaregeCandidatesByArtist, "Media de Candidaturas por Artista", key="avaregeCandidatesByArtist")
