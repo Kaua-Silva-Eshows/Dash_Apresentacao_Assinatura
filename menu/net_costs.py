@@ -8,7 +8,15 @@ from utils.functions import *
 
 def BuildNetCost(liquidValuePerTraining, liquidValuerPerStyle):
     #st.write(liquidValuePerTraining)
-
+    st.markdown(
+    """
+    <div style="text-align: center; font-weight: bold; font-size: 20px; color: #ffb131; margin: 20px 0;">
+        📅 Dados Referentes ao Período de 
+        <span style="font-size: 20px; color: #ffffff;">01/01/2025</span> <span style="font-size: 20px; color: #ffb131;">até</span> <span style="font-size: 20px; color: #ffffff;"> 31/07/2025</span>
+    </div>
+    """,
+    unsafe_allow_html=True
+)
     liquidValuePerTraining = liquidValuePerTraining[~liquidValuePerTraining['INTEGRANTES'].isin(['5 pessoas', '6 pessoas'])]
     liquidValuePerTraining = liquidValuePerTraining.copy()
     liquidValuePerTraining['MEDIA POR FORMACAO'] = liquidValuePerTraining['MEDIA POR FORMACAO'].astype(float)
