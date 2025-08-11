@@ -1,3 +1,4 @@
+import hashlib
 import numpy as np
 import pandas as pd
 import streamlit.components.v1 as components
@@ -143,3 +144,6 @@ def function_total_line(df, column_values, column_total):
     df = pd.concat([df, new_row_df], ignore_index=True)
 
     return df
+
+def function_generate_chart_key(*args):
+    return hashlib.md5("_".join(map(str, args)).encode()).hexdigest()
