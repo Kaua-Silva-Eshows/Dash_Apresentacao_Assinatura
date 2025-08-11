@@ -10,7 +10,7 @@ def BuildOpportunityAudience(avaregeCandidatesOpportunityMonth, avaregeCandidate
     with st.expander("Candidaturas Mensais"): 
         avaregeCandidatesOpportunityMonth_graph, len_df = component_plotDataframe(avaregeCandidatesOpportunityMonth, "Media de Candidatos por Oportunidade Mensal", key="avaregeCandidatesOpportunityMonth_key")
 
-    component_plot_Stacked_Line_Chart(avaregeCandidatesOpportunityMonth_graph, "Data", ["Media por Vaga", "Total de Oportunidades", "Total de Candidaturas"], "Candidaturas Mensais Grafico")
+    component_plot_Stacked_Line_Chart(avaregeCandidatesOpportunityMonth_graph, "Data", ["Media por Vaga", "Total de Oportunidades", "Total de Candidaturas"], "Candidaturas Mensais Grafico", height="500px", width="100%")
 
     with st.expander("Candidaturas Semanais"):
         df_copy, len_df = component_plotDataframe(avaregeCandidatesOpportunityWeek, "Media de Candidatos por Oportunidade Semanal", key="avaregeCandidatesOpportunityWeek_key")
