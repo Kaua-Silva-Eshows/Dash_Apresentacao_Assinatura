@@ -58,7 +58,7 @@ SELECT
 	(SELECT COUNT(*) FROM T_OPORTUNIDADES O
 		WHERE O.DATA_INICIO BETWEEN '{day}' AND '{day2}'
 		AND O.FK_CONTRATANTE NOT IN ('102','196','1015','1861','1871','1982','1983','1985','2624')
-	) AS 'Oportunidades Ultimos 3 Meses',
+	) AS 'Oportunidades Do Período',
 
 	COUNT(DISTINCT C.ID) AS 'Candidaturas do Artista',
 
