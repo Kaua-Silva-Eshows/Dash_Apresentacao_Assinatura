@@ -47,7 +47,7 @@ if __name__ == "__main__":
     st.set_page_config(page_title="Home | Assinatura de Artistas",page_icon="./assets/imgs/eshows-logo100x100.png", layout="wide")
 
     component_hide_sidebar()
-    #component_fix_tab_echarts()
+    component_fix_tab_echarts()
 
     if 'user_data' in st.session_state:
         render()
