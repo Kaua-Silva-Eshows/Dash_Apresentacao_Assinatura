@@ -16,7 +16,7 @@ def component_hide_sidebar():
     """, unsafe_allow_html=True)
 
 def component_fix_tab_echarts():
-    st.markdown(" <style>iframe{ height: 320px !important } ", unsafe_allow_html=True)
+    st.markdown(" <style>iframe{ height: 450px !important } ", unsafe_allow_html=True)
     # streamlit_style = f"""
     # <style>iframe[title*="streamlit_echarts.st_echarts"] {{height: 450px !important;width: 100% !important;}}</style>"""
     # st.markdown(streamlit_style, unsafe_allow_html=True)
