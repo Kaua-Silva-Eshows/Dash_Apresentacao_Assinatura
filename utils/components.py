@@ -215,10 +215,10 @@ def component_plotDataframe(df, name, num_columns=[], percent_columns=[], df_det
     return filtered_df, len(filtered_df)
 
 def component_plot_Stacked_Line_Chart(df, x_col, y_cols, name, height="500px", width="100%"):
-    chart_key = function_generate_chart_key(
-        x_col, tuple(y_cols) if isinstance(y_cols, list) else y_cols, name
-    )
-    
+    # chart_key = function_generate_chart_key(
+    #     x_col, tuple(y_cols) if isinstance(y_cols, list) else y_cols, name
+    # )
+    chart_key = 'component_plot_Stacked_Line_Chart'
     st.markdown(
         f"<h5 style='text-align: center; background-color: #ffb131; padding: 0.1em;'>{name}</h5>",
         unsafe_allow_html=True
@@ -290,11 +290,12 @@ def component_plot_Stacked_Line_Chart(df, x_col, y_cols, name, height="500px", w
 
 def component_plot_DualAxis_Chart(df, x_col, y_col_bar, y_col_line, name, height="470px", width="100%"):
     
-    chart_key = function_generate_chart_key(x_col, y_col_bar, y_col_line, name)
+    # chart_key = function_generate_chart_key(x_col, y_col_bar, y_col_line, name)
     st.markdown(
         f"<h5 style='text-align: center; background-color: #ffb131; padding: 0.1em;'>{name}</h5>",
         unsafe_allow_html=True
     )
+    chart_key = 'component_plot_DualAxis_Chart'
 
     df_sorted = df.copy()
     df_sorted[x_col] = pd.to_datetime(df_sorted[x_col], errors='coerce', format='%m/%Y')
@@ -351,11 +352,12 @@ def component_plot_DualAxis_Chart(df, x_col, y_col_bar, y_col_line, name, height
 
 
 def component_plot_dual_axis_line_chart(df, x_col, y_col1, y_col2, y_label1, y_label2, name):
-    chart_key = function_generate_chart_key(x_col, y_col1, y_col2, name)
+    #chart_key = function_generate_chart_key(x_col, y_col1, y_col2, name)
     st.markdown(
         f"<h5 style='text-align: center; background-color: #ffb131; padding: 0.1em;'>{name}</h5>",
         unsafe_allow_html=True
     )
+    chart_key = 'component_plot_dual_axis_line_chart'
 
     df_sorted = df.copy()
     categorias = df_sorted[x_col].tolist()
@@ -405,7 +407,8 @@ def component_plot_dual_axis_line_chart(df, x_col, y_col1, y_col2, y_label1, y_l
 
 
 def component_plot_dual_axis_bar_line(df, x_col, y_col_bar, y_col_line, name):
-    chart_key = function_generate_chart_key(x_col, y_col_bar, y_col_line, name)
+    #chart_key = function_generate_chart_key(x_col, y_col_bar, y_col_line, name)
+    chart_key = 'component_plot_dual_axis_bar_line'
     st.markdown(f"<h5 style='text-align: center; background-color: #ffb131; padding: 0.1em;'>{name}</h5>", unsafe_allow_html=True)
 
     df_sorted = df.copy()
@@ -438,7 +441,8 @@ def component_plot_dual_axis_bar_line(df, x_col, y_col_bar, y_col_line, name):
 
 
 def component_plot_dual_axis_bar_chart(df, x_col, y_col1, y_col2, y_label1, y_label2, name, height="490px", width="100%"):
-    chart_key = function_generate_chart_key(x_col, y_col1, y_col2, name)
+    #chart_key = function_generate_chart_key(x_col, y_col1, y_col2, name)
+    chart_key = 'component_plot_dual_axis_bar_chart'
     st.markdown(f"<h5 style='text-align: center; background-color: #ffb131; padding: 0.1em;'>{name}</h5>", unsafe_allow_html=True)
 
     categorias = df[x_col].tolist()
@@ -484,7 +488,8 @@ def component_plot_dual_axis_bar_chart(df, x_col, y_col1, y_col2, y_label1, y_la
 
 
 def component_plot_line_chart(df, x_col, y_col, y_label, name, height="410px", width="100%"):
-    chart_key = function_generate_chart_key(x_col, y_col, name)
+    #chart_key = function_generate_chart_key(x_col, y_col, name)
+    chart_key = 'component_plot_line_chart'
     st.markdown(f"<h5 style='text-align: center; background-color: #ffb131; padding: 0.1em;'>{name}</h5>", unsafe_allow_html=True)
 
     categorias = df[x_col].tolist()
