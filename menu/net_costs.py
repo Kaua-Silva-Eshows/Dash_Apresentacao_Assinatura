@@ -8,11 +8,13 @@ from utils.functions import *
 
 def BuildNetCost(liquidValuePerTraining, liquidValuerPerStyle):
     #st.write(liquidValuePerTraining)
-    st.markdown(
-    """
-    <div style="text-align: center; font-weight: bold; font-size: 20px; color: #ffb131; margin: 20px 0;">
+    if st.session_state.get("base_theme") == "dark":
+        text_color = "#ffffff"
+    else:
+        text_color = "#000000"
+    st.markdown(f"""<div style="text-align: center; font-weight: bold; font-size: 20px; color: #ffb131; margin: 20px 0;">
         📅 Dados Referentes ao Período de 
-        <span style="font-size: 20px; color: #ffffff;">01/01/2025</span> <span style="font-size: 20px; color: #ffb131;">até</span> <span style="font-size: 20px; color: #ffffff;"> 31/07/2025</span>
+        <span style="font-size: 20px; color: {text_color};">01/01/2025</span> <span style="font-size: 20px; color: #ffb131;">até</span> <span style="font-size: 20px; color: {text_color};"> 31/07/2025</span>
     </div>
     """,
     unsafe_allow_html=True

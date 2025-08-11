@@ -461,7 +461,7 @@ def component_plot_dual_axis_bar_chart(df, x_col, y_col1, y_col2, y_label1, y_la
         "tooltip": {"trigger": "axis", "axisPointer": {"type": "shadow"}},
         "legend": {"data": [y_label1, y_label2], "top": 30, "textStyle": {"color": text_color}},
         "grid": {"left": "3%", "right": "4%", "bottom": "10%", "containLabel": True},
-        "xAxis": {"type": "category", "data": categorias, "axisLabel": {"rotate": 45}, "axisLine": {"lineStyle": {"color": text_color}}},
+        "xAxis": {"type": "category", "data": categorias, "axisLabel": {"rotate": 50}, "axisLine": {"lineStyle": {"color": text_color}}},
         "yAxis": [
             {"type": "value", "name": y_label1, "position": "left", "axisLine": {"lineStyle": {"color": cor1}}},
             {"type": "value", "name": y_label2, "position": "right", "axisLine": {"lineStyle": {"color": cor2}},
@@ -522,25 +522,30 @@ def component_plot_line_chart(df, x_col, y_col, y_label, name, height="410px", w
 
 
 def component_custom_card(title, value, subtitle=""):
-        card_html = f"""<div style="
-    background: #ffb131;
-    padding: 15px;
-    border-radius: 5px;
-    width: 250px;
-    height: 130px;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-    color: white;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    margin: 10px auto;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    text-align: center;
-">
-    <h3 style="margin: 0 0 -10px 0;; font-weight: 600; font-size: 1.2rem; text-align: center;">{title}</h3>
-    <p style="margin: 0; font-size: 1.8rem; font-weight: 700; line-height: 1.8rem; text-align: center;">{value}</p>
-    <small style="opacity: 0.85; font-weight: 400; font-size: 0.85rem; margin-top: 4px;">{subtitle}</small>
-</div>
-"""
-        st.markdown(card_html, unsafe_allow_html=True)
+    if st.session_state.get("base_theme") == "dark":
+        text_color = "#ffffff"
+    else:
+        text_color = "#000000"
+        
+    card_html = f"""<div style="
+        background: #ffb131;
+        padding: 15px;
+        border-radius: 5px;
+        width: 250px;
+        height: 130px;
+        box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        color: {text_color};
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        margin: 10px auto;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+    ">
+        <h3 style="margin: 0 0 -10px 0; color: {text_color};font-weight: 600; font-size: 1.2rem;">{title}</h3>
+        <p style="margin: 0; font-size: 1.8rem; font-weight: 700; line-height: 1.8rem;">{value}</p>
+        <small style="opacity: 0.85; font-weight: 400; font-size: 0.85rem; margin-top: 4px;">{subtitle}</small>
+    </div>
+    """
+    st.markdown(card_html, unsafe_allow_html=True)
