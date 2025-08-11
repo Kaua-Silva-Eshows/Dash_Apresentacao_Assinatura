@@ -29,6 +29,14 @@ def BuildOpportunityAudience(avaregeCandidatesOpportunityMonth, avaregeCandidate
 
     avaregeCandidatesByArtist = avarege_candidates_by_artist(day, day2)
 
+    row_card = st.columns([1,2,2,1])
+    with row_card[1]:
+        vlaue = function_format_number(avaregeCandidatesByArtist['Candidaturas do Artista'].sum())
+        component_custom_card("T. de Candidaturas", vlaue, "candidaturas")
+    with row_card[2]:
+        component_custom_card("Artitistas Distintos", avaregeCandidatesByArtist['ARTISTA'].nunique(), "artistas_distintos")
+
+
     component_plotDataframe(avaregeCandidatesByArtist, "Media de Candidaturas por Artista", key="avaregeCandidatesByArtist")
 
     row = st.columns(2)

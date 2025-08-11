@@ -147,3 +147,10 @@ def function_total_line(df, column_values, column_total):
 
 def function_generate_chart_key(*args):
     return hashlib.md5("_".join(map(str, args)).encode()).hexdigest()
+
+def function_format_number(value):
+    s = f"{value:,.2f}".replace(",", "X").replace(".", ",").replace("X", ".")
+    # Remove ",00" no final
+    if s.endswith(",00"):
+        s = s[:-3]
+    return s
