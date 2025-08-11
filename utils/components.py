@@ -14,15 +14,9 @@ def component_hide_sidebar():
     </style>
     """, unsafe_allow_html=True)
 
-def component_fix_tab_echarts(height="450px", width="650px"):
+def component_fix_tab_echarts(height="450px", width="100%"):
     streamlit_style = f"""
-    <style>
-    iframe[title*="echarts"] {{
-        height: {height} !important;
-        width: {width} !important;
-    }}
-    </style>
-    """
+    <style>iframe[title*="streamlit_echarts.st_echarts"] {{height: 450px !important;width: 100% !important;}}</style>"""
     st.markdown(streamlit_style, unsafe_allow_html=True)
 
 def component_effect_underline():
@@ -291,8 +285,7 @@ def component_plot_Stacked_Line_Chart(df, x_col, y_cols, name, height="500px", w
     st_echarts(options=options, height=height, width=width, key=chart_key)
 
 
-def component_plot_DualAxis_Chart(df, x_col, y_col_bar, y_col_line, name, height="500px", width="100%"):
-    component_fix_tab_echarts(height, width)
+def component_plot_DualAxis_Chart(df, x_col, y_col_bar, y_col_line, name, height="470px", width="100%"):
     
     chart_key = generate_chart_key(x_col, y_col_bar, y_col_line, name)
     st.markdown(
@@ -395,7 +388,7 @@ def component_plot_dual_axis_line_chart(df, x_col, y_col1, y_col2, y_label1, y_l
             }
         ]
     }
-    st_echarts(options=options, height="490px", width="52%", key=chart_key)
+    st_echarts(options=options, height="490px", width="100%", key=chart_key)
 
 
 def component_plot_dual_axis_bar_line(df, x_col, y_col_bar, y_col_line, name):
@@ -423,10 +416,10 @@ def component_plot_dual_axis_bar_line(df, x_col, y_col_bar, y_col_line, name):
             {"name": y_col_line, "type": "line", "yAxisIndex": 1, "smooth": True, "lineStyle": {"width": 3, "color": cor_line}, "data": df_sorted[y_col_line].tolist()}
         ]
     }
-    st_echarts(options=options, height="490px", width="52%", key=chart_key)
+    st_echarts(options=options, height="490px", width="100%", key=chart_key)
 
 
-def component_plot_dual_axis_bar_chart(df, x_col, y_col1, y_col2, y_label1, y_label2, name, height="490px", width="52%"):
+def component_plot_dual_axis_bar_chart(df, x_col, y_col1, y_col2, y_label1, y_label2, name, height="490px", width="100%"):
     chart_key = generate_chart_key(x_col, y_col1, y_col2, name)
     st.markdown(f"<h5 style='text-align: center; background-color: #ffb131; padding: 0.1em;'>{name}</h5>", unsafe_allow_html=True)
 
@@ -467,7 +460,7 @@ def component_plot_dual_axis_bar_chart(df, x_col, y_col1, y_col2, y_label1, y_la
     st_echarts(options=options, height=height, width=width, key=chart_key)
 
 
-def component_plot_line_chart(df, x_col, y_col, y_label, name, height="410px", width="52%"):
+def component_plot_line_chart(df, x_col, y_col, y_label, name, height="410px", width="100%"):
     chart_key = generate_chart_key(x_col, y_col, name)
     st.markdown(f"<h5 style='text-align: center; background-color: #ffb131; padding: 0.1em;'>{name}</h5>", unsafe_allow_html=True)
 
