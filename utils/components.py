@@ -338,15 +338,9 @@ def component_plot_DualAxis_Chart(df, x_col, y_col_bar, y_col_line, name, height
     st_echarts(options=options, height=height, width=width, key=chart_key)
 
 
-def component_plot_dual_axis_line_chart(df, x_col, y_col1, y_col2, y_label1, y_label2, name, height="500px", width="100%"):
-    # Garante que o iframe tenha o tamanho correto
-    component_fix_tab_echarts(height, width)
-
+def component_plot_dual_axis_line_chart(df, x_col, y_col1, y_col2, y_label1, y_label2, name):
     chart_key = generate_chart_key(x_col, y_col1, y_col2, name)
-    st.markdown(
-        f"<h5 style='text-align: center; background-color: #ffb131; padding: 0.1em;'>{name}</h5>",
-        unsafe_allow_html=True
-    )
+    st.markdown(f"<h5 style='text-align: center; background-color: #ffb131; padding: 0.1em;'>{name}</h5>", unsafe_allow_html=True)
 
     df_sorted = df.copy()
     categorias = df_sorted[x_col].tolist()
@@ -365,38 +359,16 @@ def component_plot_dual_axis_line_chart(df, x_col, y_col1, y_col2, y_label1, y_l
             {"type": "value", "name": y_label2, "position": "right", "axisLine": {"lineStyle": {"color": cor2}}}
         ],
         "series": [
-            {
-                "name": y_label1,
-                "type": "line",
-                "data": dados1,
-                "yAxisIndex": 0,
-                "smooth": True,
-                "lineStyle": {"color": cor1, "width": 3}
-            },
-            {
-                "name": y_label2,
-                "type": "line",
-                "data": dados2,
-                "yAxisIndex": 1,
-                "smooth": True,
-                "lineStyle": {"color": cor2, "width": 3}
-            }
+            {"name": y_label1, "type": "line", "data": dados1, "yAxisIndex": 0, "smooth": True, "lineStyle": {"color": cor1, "width": 3}},
+            {"name": y_label2, "type": "line", "data": dados2, "yAxisIndex": 1, "smooth": True, "lineStyle": {"color": cor2, "width": 3}}
         ]
     }
-
-    # Usa altura/largura personalizáveis
-    st_echarts(options=options, height=height, width=width, key=chart_key)
+    st_echarts(options=options, height="500px", width="52%", key=chart_key)
 
 
-def component_plot_dual_axis_bar_line(df, x_col, y_col_bar, y_col_line, name, height="500px", width="100%"):
-    # Garante que o gráfico tenha altura/largura visíveis mesmo em abas/colunas
-    component_fix_tab_echarts(height, width)
-
+def component_plot_dual_axis_bar_line(df, x_col, y_col_bar, y_col_line, name):
     chart_key = generate_chart_key(x_col, y_col_bar, y_col_line, name)
-    st.markdown(
-        f"<h5 style='text-align: center; background-color: #ffb131; padding: 0.1em;'>{name}</h5>",
-        unsafe_allow_html=True
-    )
+    st.markdown(f"<h5 style='text-align: center; background-color: #ffb131; padding: 0.1em;'>{name}</h5>", unsafe_allow_html=True)
 
     df_sorted = df.copy()
     df_sorted[y_col_bar] = df_sorted[y_col_bar].fillna(0).astype(float)
@@ -412,27 +384,11 @@ def component_plot_dual_axis_bar_line(df, x_col, y_col_bar, y_col_line, name, he
             {"type": "value", "name": y_col_line, "position": "right", "axisLabel": {"formatter": "R$ {value}"}}
         ],
         "series": [
-            {
-                "name": y_col_bar,
-                "type": "bar",
-                "yAxisIndex": 0,
-                "data": df_sorted[y_col_bar].tolist(),
-                "barWidth": "40%",
-                "itemStyle": {"color": "#ffb131"}
-            },
-            {
-                "name": y_col_line,
-                "type": "line",
-                "yAxisIndex": 1,
-                "smooth": True,
-                "lineStyle": {"width": 3, "color": "#4200db"},
-                "data": df_sorted[y_col_line].tolist()
-            }
+            {"name": y_col_bar, "type": "bar", "yAxisIndex": 0, "data": df_sorted[y_col_bar].tolist(), "barWidth": "40%", "itemStyle": {"color": "#ffb131"}},
+            {"name": y_col_line, "type": "line", "yAxisIndex": 1, "smooth": True, "lineStyle": {"width": 3, "color": "#4200db"}, "data": df_sorted[y_col_line].tolist()}
         ]
     }
-
-    # Usa altura/largura customizáveis
-    st_echarts(options=options, height=height, width=width, key=chart_key)
+    st_echarts(options=options, height="500px", width="52%",key=chart_key)
 def component_custom_card(title, value, subtitle=""):
         card_html = f"""<div style="
     background: #ffb131;
