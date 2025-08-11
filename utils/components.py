@@ -520,7 +520,7 @@ def component_custom_card(title, value, subtitle=""):
     background: #ffb131;
     padding: 15px;
     border-radius: 5px;
-    width: 230px;
+    width: 250px;
     height: 130px;
     box-shadow: 0 4px 8px rgba(0,0,0,0.2);
     color: white;
@@ -532,9 +532,9 @@ def component_custom_card(title, value, subtitle=""):
     align-items: center;
     text-align: center;
 ">
-    <h3 style="margin: 0; font-weight: 600; font-size: 1.2rem; text-align: left; margin-left: 25px;">{title}</h3>
-    <p style="margin: 0; font-size: 1.8rem; font-weight: 700; line-height: 1.8rem;">{value}</p>
-    <small style="opacity: 0.85; font-size: 0.85rem; margin-top: 4px;">{subtitle}</small>
+    <h3 style="margin: 0 0 -10px 0;; font-weight: 600; font-size: 1.2rem; text-align: center;">{title}</h3>
+    <p style="margin: 0; font-size: 1.8rem; font-weight: 700; line-height: 1.8rem; text-align: center;">{value}</p>
+    <small style="opacity: 0.85; font-weight: 400; font-size: 0.85rem; margin-top: 4px;">{subtitle}</small>
 </div>
 """
         st.markdown(card_html, unsafe_allow_html=True)
