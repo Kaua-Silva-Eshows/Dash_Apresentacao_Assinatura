@@ -6,7 +6,7 @@ from utils.components import *
 from utils.functions import *
 
 
-def BuildNetCost(liquidValuePerTraining):
+def BuildNetCost(liquidValuePerTraining, liquidValuerPerStyle):
     #st.write(liquidValuePerTraining)
 
     liquidValuePerTraining = liquidValuePerTraining[~liquidValuePerTraining['INTEGRANTES'].isin(['5 pessoas', '6 pessoas'])]
@@ -16,20 +16,30 @@ def BuildNetCost(liquidValuePerTraining):
     #st.write(liquidValuePerTraining)
     # row_cards = st.columns(2)
     # with row_cards[0]:
-        #component_custom_card(
-        #     title="Valor Médio por Formação",
-        #     value=f"R$ {liquidValuePerTraining['MEDIA POR FORMACAO'].mean():,.2f}",
-        #     subtitle="Média de valor por formação"
-        # )
+    #     component_custom_card(
+    #         title="Valor Médio por Formação",
+    #         value=f"R$ {liquidValuePerTraining['MEDIA POR FORMACAO'].mean():,.2f}",
+    #         subtitle="Média de valor por formação"
+    #     )
     row_training = st.columns(2)
     with row_training[0]:
         component_plot_dual_axis_bar_line(liquidValuePerTraining,x_col='FORMAÇÃO',y_col_bar='OPORTUNIDADES',y_col_line='Valor por H',name='Oportunidade e Valor por Hora por Formação')
     with row_training[1]:
         component_plot_dual_axis_line_chart(liquidValuePerTraining,x_col='FORMAÇÃO',y_col1='MEDIA POR FORMACAO',y_col2='Media de horas por show',y_label1='Valor Médio (R$)',y_label2='Horas Médias',name='Comparação de Valor Médio e Horas Médias por Formação')
+
+    st.write('---')
+
+    row_style = st.columns(2)
+    with row_style[0]:
+        component_plot_dual_axis_bar_chart(liquidValuerPerStyle, "Estilo", "Oportunidades", "Valor Total", "Oportunidades", "Valor Total (R$)", "Oportunidades e Valor Total")
+    with row_style[1]:
+        component_plot_line_chart(liquidValuerPerStyle, "Estilo", "Media por Show", "Media por Show", "Media por Show")
+
 class NetCost(Page):
     def render(self):
         self.data = {}
         self.data['liquidValuePerTraining'] = liquid_value_per_training()
+        self.data['liquidValuerPerStyle'] = liquid_valuer_per_style()
         
-        
-        BuildNetCost(self.data['liquidValuePerTraining'])
+        BuildNetCost(self.data['liquidValuePerTraining'],
+                     self.data['liquidValuerPerStyle'])
