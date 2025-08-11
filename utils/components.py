@@ -15,10 +15,11 @@ def component_hide_sidebar():
     </style>
     """, unsafe_allow_html=True)
 
-def component_fix_tab_echarts(height="450px", width="100%"):
-    streamlit_style = f"""
-    <style>iframe[title*="streamlit_echarts.st_echarts"] {{height: 450px !important;width: 100% !important;}}</style>"""
-    st.markdown(streamlit_style, unsafe_allow_html=True)
+def component_fix_tab_echarts():
+    st.markdown(" <style>iframe{ height: 320px !important } ", unsafe_allow_html=True)
+    # streamlit_style = f"""
+    # <style>iframe[title*="streamlit_echarts.st_echarts"] {{height: 450px !important;width: 100% !important;}}</style>"""
+    # st.markdown(streamlit_style, unsafe_allow_html=True)
 
 def component_effect_underline():
     if st.session_state.get("base_theme") == "dark":
