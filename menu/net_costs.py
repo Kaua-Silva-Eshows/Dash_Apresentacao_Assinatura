@@ -23,17 +23,32 @@ def BuildNetCost(liquidValuePerTraining, liquidValuerPerStyle):
     #     )
     row_training = st.columns(2)
     with row_training[0]:
-        component_plot_dual_axis_bar_line(liquidValuePerTraining,x_col='FORMAÇÃO',y_col_bar='OPORTUNIDADES',y_col_line='Valor por H',name='Oportunidade e Valor por Hora por Formação')
+        component_plot_dual_axis_bar_line(liquidValuePerTraining,x_col='FORMAÇÃO',y_col_bar='OPORTUNIDADES',y_col_line='Valor por H',name='Oportunidades e Méd. Valor por Hora')
     with row_training[1]:
-        component_plot_dual_axis_line_chart(liquidValuePerTraining,x_col='FORMAÇÃO',y_col1='MEDIA POR FORMACAO',y_col2='Media de horas por show',y_label1='Valor Médio (R$)',y_label2='Horas Médias',name='Comparação de Valor Médio e Horas Médias por Formação')
+        component_plot_dual_axis_line_chart(liquidValuePerTraining,x_col='FORMAÇÃO',y_col1='MEDIA POR FORMACAO',y_col2='Media de horas por show',y_label1='Valor Médio (R$)',y_label2='Horas Médias',name='Horas Méd. por Show e Valor Médio por Formação')
 
     st.write('---')
 
+    row_filter_style = st.columns(3)
+    with row_filter_style[1]:
+        style_selector = liquidValuerPerStyle['Estilo'].unique().tolist()
+        options = ["Todos"] + style_selector
+
+        style_filter = st.multiselect("Selecione o Estilo", options, default=["Todos"])
+
+        # Interpretar seleção:
+        if "Todos" in style_filter:
+            style_filter = style_selector  # seleciona todos os estilos
+        else:
+            style_filter = style_filter
+
     row_style = st.columns(2)
     with row_style[0]:
-        component_plot_dual_axis_bar_chart(liquidValuerPerStyle, "Estilo", "Oportunidades", "Valor Total", "Oportunidades", "Valor Total (R$)", "Oportunidades e Valor Total")
+        liquidValuerPerStyle_filtered = liquidValuerPerStyle[liquidValuerPerStyle['Estilo'].isin(style_filter)]
+        component_plot_dual_axis_bar_chart(liquidValuerPerStyle_filtered, "Estilo", "Oportunidades", "Valor Total", "Oportunidades", "Valor Total (R$)", "Oportunidades e Valor Total Por Estilo")
     with row_style[1]:
-        component_plot_line_chart(liquidValuerPerStyle, "Estilo", "Media por Show", "Media por Show", "Media por Show")
+        liquidValuerPerStyle_filtered = liquidValuerPerStyle[liquidValuerPerStyle['Estilo'].isin(style_filter)]
+        component_plot_line_chart(liquidValuerPerStyle_filtered, "Estilo", "Media por Show", "Media por Show", "Valor Méd. Por Show e Estilo")
 
 class NetCost(Page):
     def render(self):
