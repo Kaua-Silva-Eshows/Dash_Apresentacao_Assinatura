@@ -289,19 +289,15 @@ def component_plot_Stacked_Line_Chart(df, x_col, y_cols, name, height="500px", w
     
     st_echarts(options=options, height=height, width=width, key=chart_key)
 
-def component_plot_DualAxis_Chart(df, x_col, y_col_bar, y_col_line, name, height="470px", width="100%"):
-    
-    # chart_key = function_generate_chart_key(x_col, y_col_bar, y_col_line, name)
+def component_plot_DualAxis_Chart(df, x_col, y_col_bar, y_col_line, y_col_line2, name, height="470px", width="100%"):
     st.markdown(
         f"<h5 style='text-align: center; background-color: #ffb131; padding: 0.1em;'>{name}</h5>",
         unsafe_allow_html=True
     )
-    chart_key = 'component_plot_DualAxis_Chart'
 
     df_sorted = df.copy()
     df_sorted[x_col] = pd.to_datetime(df_sorted[x_col], errors='coerce', format='%m/%Y')
     df_sorted = df_sorted.dropna(subset=[x_col])
-
     if df_sorted.empty:
         st.warning(f"Sem dados válidos para {name}")
         return
@@ -309,26 +305,18 @@ def component_plot_DualAxis_Chart(df, x_col, y_col_bar, y_col_line, name, height
     df_sorted = df_sorted.sort_values(by=x_col)
     x_labels = df_sorted[x_col].dt.strftime('%m/%Y').tolist()
 
-    if st.session_state.get("base_theme") == "dark":
-        text_color = "#ffffff"
-    else:
-        text_color = "#000000"
+    text_color = "#ffffff" if st.session_state.get("base_theme") == "dark" else "#000000"
 
-    colors = [
-        "#1e88e5",  # azul
-        "#ffb131",  # amarelo
-    ]
+    colors = ["#1e88e5", "#ffb131", "#43a047"]  # azul, amarelo, verde
 
     options = {
-        "color": colors[:2],
+        "color": colors[:3],
         "tooltip": {"trigger": "axis", "axisPointer": {"type": "cross"}},
-        "toolbox": {"feature": {"saveAsImage": {}, "restore": {}, "dataView": {"readOnly": True}}},
-        "legend": {"data": [y_col_bar, y_col_line], "top": 30, "textStyle": {"color": text_color}},
+        "legend": {"data": [y_col_bar, y_col_line, y_col_line2], "top": 30, "textStyle": {"color": text_color}},
         "xAxis": {"type": "category", "data": x_labels, "axisLabel": {"rotate": 45}, "axisLine": {"lineStyle": {"color": text_color}}},
         "yAxis": [
             {"type": "value", "name": y_col_bar, "position": "left", "axisLine": {"lineStyle": {"color": colors[0]}}},
-            {"type": "value", "name": y_col_line, "position": "right", "axisLine": {"lineStyle": {"color": colors[1]}},
-             "axisLabel": {"formatter": "{value} dias"}}
+            {"type": "value", "name": f"{y_col_line} / {y_col_line2}", "position": "right", "axisLine": {"lineStyle": {"color": colors[1]}}}
         ],
         "series": [
             {
@@ -345,11 +333,19 @@ def component_plot_DualAxis_Chart(df, x_col, y_col_bar, y_col_line, name, height
                 "smooth": True,
                 "lineStyle": {"width": 3},
                 "data": df_sorted[y_col_line].fillna(0).astype(float).tolist()
+            },
+            {
+                "name": y_col_line2,
+                "type": "line",
+                "yAxisIndex": 1,  # usa o mesmo eixo da direita
+                "smooth": True,
+                "lineStyle": {"width": 3, "type": "dashed"},
+                "data": df_sorted[y_col_line2].fillna(0).astype(float).tolist()
             }
         ]
     }
-    
-    st_echarts(options=options, height=height, width=width, key=chart_key)
+
+    st_echarts(options=options, height=height, width=width, key='component_plot_DualAxis_Chart')
 
 
 def component_plot_dual_axis_line_chart(df, x_col, y_col1, y_col2, y_label1, y_label2, name):
