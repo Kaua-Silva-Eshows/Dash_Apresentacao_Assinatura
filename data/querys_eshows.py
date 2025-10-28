@@ -3,13 +3,32 @@ import streamlit as st
 
 #Media de candidatos por oportunidade Mensal
 @st.cache_data
-def avarege_candidates_by_opportunity_month():
-    return get_dataframe_from_query("""
+def avarege_candidates_by_opportunity_month(day1_atual, day2_atual, day1_anterior, day2_anterior):
+    return get_dataframe_from_query(f"""
 SELECT 
 	DATE_FORMAT(O.DATA_INICIO, '%m/%Y') AS 'Data',
 	COUNT(C.ID) AS 'Total de Candidaturas',
 	COUNT(DISTINCT O.ID) AS 'Total de Oportunidades',
-	ROUND(COUNT(C.ID) / COUNT(DISTINCT O.ID), 2) AS 'Media por Vaga'
+	ROUND(COUNT(C.ID) / COUNT(DISTINCT O.ID), 2) AS 'Media por Vaga',
+  
+  (SELECT
+   COUNT(C.ID) AS 'Total de Candidaturas'
+   FROM T_OPORTUNIDADES O
+   LEFT JOIN T_CANDIDATOS C ON C.FK_OPORTUNIDADE = O.ID
+		WHERE O.DATA_INICIO >= '{day1_atual}'
+   	AND O.DATA_INICIO < '{day2_atual}'
+		AND O.FK_CONTRATANTE NOT IN ('102','196','1015','1861','1871','1982','1983','1985','2624')
+	) AS 'Candidaturas Do Período Atual',
+  
+  (SELECT
+   COUNT(C.ID) AS 'Total de Candidaturas'
+   FROM T_OPORTUNIDADES O
+   LEFT JOIN T_CANDIDATOS C ON C.FK_OPORTUNIDADE = O.ID
+		WHERE O.DATA_INICIO >= '{day1_anterior}'
+   	AND O.DATA_INICIO < '{day2_anterior}'
+		AND O.FK_CONTRATANTE NOT IN ('102','196','1015','1861','1871','1982','1983','1985','2624')
+	) AS 'Candidaturas Do Período Anterior'
+  
 FROM T_OPORTUNIDADES O
 LEFT JOIN T_CANDIDATOS C ON C.FK_OPORTUNIDADE = O.ID
 	WHERE O.DATA_INICIO IS NOT NULL
@@ -107,7 +126,6 @@ WHERE O.DATA_INICIO BETWEEN '{day}' AND '{day2}'
   AND O.FK_CONTRATANTE NOT IN ('102','196','1015','1861','1871','1982','1983','1985','2624')
 
 GROUP BY A.ID, A.NOME
-HAVING COUNT(DISTINCT C.ID) > 1
 ORDER BY COUNT(DISTINCT C.ID) DESC;
 """)
 
@@ -174,8 +192,8 @@ ORDER BY YEAR(O.DATA_INICIO);
 
 #Valor liquido por formação
 @st.cache_data
-def liquid_value_per_training():
-	return get_dataframe_from_query("""
+def liquid_value_per_training(day1, day2):
+	return get_dataframe_from_query(f"""
 SELECT 
   F.DESCRICAO AS 'FORMAÇÃO',
   COUNT(O.ID) AS 'OPORTUNIDADES',
@@ -189,16 +207,16 @@ FROM T_OPORTUNIDADES O
 LEFT JOIN T_FORMACAO F ON F.ID = O.FK_FORMACAO
 WHERE F.ID IS NOT NULL
   AND O.FK_CONTRATANTE NOT IN ('102','196','1015','1861','1871','1982','1983','1985','2624')
-  AND O.DATA_INICIO >= '2025-01-01'
-  AND O.DATA_INICIO < '2025-08-01'
+  AND O.DATA_INICIO >= '{day1}'
+  AND O.DATA_INICIO < '{day2}'
   AND O.DATA_INICIO < O.DATA_FIM
 GROUP BY O.FK_FORMACAO, F.DESCRICAO, F.NUM_INTEGRANTES
 ORDER BY O.FK_FORMACAO;
 """)
 
 @st.cache_data
-def liquid_valuer_per_style():
-	return get_dataframe_from_query("""
+def liquid_valuer_per_style(day1, day2):
+	return get_dataframe_from_query(f"""
 WITH ESTILOS AS (
     SELECT 
         O.ID,
@@ -208,8 +226,8 @@ WITH ESTILOS AS (
     LEFT JOIN T_PROPOSTAS P ON P.ID = O.FK_PROPOSTA
     LEFT JOIN T_ATRACOES A ON A.ID = P.FK_CONTRATADO
     LEFT JOIN T_ESTILOS_MUSICAIS EM ON EM.ID = O.FK_ESTILO_INTERESSE_1
-    WHERE O.DATA_INICIO >= '2025-01-01'
-      AND O.DATA_INICIO < '2025-08-01'
+    WHERE O.DATA_INICIO >= '{day1}'
+      AND O.DATA_INICIO < '{day2}'
       AND O.FK_CONTRATANTE NOT IN ('102','196','1015','1861','1871','1982','1983','1985','2624')
       AND A.NOME NOT LIKE '%Teste%'
       AND O.FK_STATUS_OPORTUNIDADE IN ('102','103','104')
@@ -224,8 +242,8 @@ WITH ESTILOS AS (
     LEFT JOIN T_PROPOSTAS P ON P.ID = O.FK_PROPOSTA
     LEFT JOIN T_ATRACOES A ON A.ID = P.FK_CONTRATADO
     LEFT JOIN T_ESTILOS_MUSICAIS EM2 ON EM2.ID = O.FK_ESTILO_INTERESSE_2
-    WHERE O.DATA_INICIO >= '2025-01-01'
-      AND O.DATA_INICIO < '2025-08-01'
+    WHERE O.DATA_INICIO >= '{day1}'
+      AND O.DATA_INICIO < '{day2}'
       AND O.FK_CONTRATANTE NOT IN ('102','196','1015','1861','1871','1982','1983','1985','2624')
       AND A.NOME NOT LIKE '%Teste%'
       AND O.FK_STATUS_OPORTUNIDADE IN ('102','103','104')
@@ -240,8 +258,8 @@ WITH ESTILOS AS (
     LEFT JOIN T_PROPOSTAS P ON P.ID = O.FK_PROPOSTA
     LEFT JOIN T_ATRACOES A ON A.ID = P.FK_CONTRATADO
     LEFT JOIN T_ESTILOS_MUSICAIS EM3 ON EM3.ID = O.FK_ESTILO_INTERESSE_3
-    WHERE O.DATA_INICIO >= '2025-01-01'
-      AND O.DATA_INICIO < '2025-08-01'
+    WHERE O.DATA_INICIO >= '{day1}'
+      AND O.DATA_INICIO < '{day2}'
       AND O.FK_CONTRATANTE NOT IN ('102','196','1015','1861','1871','1982','1983','1985','2624')
       AND A.NOME NOT LIKE '%Teste%'
       AND O.FK_STATUS_OPORTUNIDADE IN ('102','103','104')

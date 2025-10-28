@@ -402,10 +402,97 @@ def component_plot_dual_axis_line_chart(df, x_col, y_col1, y_col2, y_label1, y_l
     }
     st_echarts(options=options, height="490px", width="100%", key=chart_key)
 
+def component_plot_dual_axis_line_chart2(df, x_col, y_col1, y_col2, y_label1, y_label2, name):
+    #chart_key = function_generate_chart_key(x_col, y_col1, y_col2, name)
+    st.markdown(
+        f"<h5 style='text-align: center; background-color: #ffb131; padding: 0.1em;'>{name}</h5>",
+        unsafe_allow_html=True
+    )
+    chart_key = 'component_plot_dual_axis_line_chart2'
+
+    df_sorted = df.copy()
+    categorias = df_sorted[x_col].tolist()
+    dados1 = df_sorted[y_col1].fillna(0).astype(float).tolist()
+    dados2 = df_sorted[y_col2].fillna(0).astype(float).tolist()
+
+    if st.session_state.get("base_theme") == "dark":
+        text_color = "#ffffff"
+    else:
+        text_color = "#000000"
+
+    cor1, cor2 = "#ffb131", "#1e88e5"
+
+    options = {
+        "tooltip": {"trigger": "axis"},
+        "legend": {"data": [y_label1, y_label2], "top": 30, "textStyle": {"color": text_color}},
+        "grid": {"left": "5%", "right": "5%", "bottom": "10%", "containLabel": True},
+        "xAxis": {"type": "category", "data": categorias, "axisLine": {"lineStyle": {"color": text_color}}},
+        "yAxis": [
+            {"type": "value", "name": y_label1, "position": "left", "axisLine": {"lineStyle": {"color": cor1}}},
+            {"type": "value", "name": y_label2, "position": "right", "axisLine": {"lineStyle": {"color": cor2}}}
+        ],
+        "series": [
+            {
+                "name": y_label1,
+                "type": "line",
+                "data": dados1,
+                "yAxisIndex": 0,
+                "smooth": True,
+                "lineStyle": {"color": cor1, "width": 3},
+                "itemStyle": {"color": cor1},
+                "symbolSize": 8
+            },
+            {
+                "name": y_label2,
+                "type": "line",
+                "data": dados2,
+                "yAxisIndex": 1,
+                "smooth": True,
+                "lineStyle": {"color": cor2, "width": 3},
+                "itemStyle": {"color": cor2},
+                "symbolSize": 8
+            }
+        ]
+    }
+    st_echarts(options=options, height="490px", width="100%", key=chart_key)
+
 
 def component_plot_dual_axis_bar_line(df, x_col, y_col_bar, y_col_line, name):
     #chart_key = function_generate_chart_key(x_col, y_col_bar, y_col_line, name)
     chart_key = 'component_plot_dual_axis_bar_line'
+    st.markdown(f"<h5 style='text-align: center; background-color: #ffb131; padding: 0.1em;'>{name}</h5>", unsafe_allow_html=True)
+
+    df_sorted = df.copy()
+    df_sorted[y_col_bar] = df_sorted[y_col_bar].fillna(0).astype(float)
+    df_sorted[y_col_line] = df_sorted[y_col_line].fillna(0).astype(float)
+
+    if st.session_state.get("base_theme") == "dark":
+        text_color = "#ffffff"
+    else:
+        text_color = "#000000"
+
+    cor_bar, cor_line = "#ffb131", "#1e88e5"
+
+    options = {
+        "tooltip": {"trigger": "axis", "axisPointer": {"type": "cross"}},
+        "toolbox": {"feature": {"saveAsImage": {}, "restore": {}, "dataView": {"readOnly": True}}},
+        "legend": {"data": [y_col_bar, y_col_line], "top": 30, "textStyle": {"color": text_color}},
+        "xAxis": {"type": "category", "data": df_sorted[x_col].tolist(), "axisLine": {"lineStyle": {"color": text_color}}},
+        "yAxis": [
+            {"type": "value", "name": y_col_bar, "position": "left", "axisLine": {"lineStyle": {"color": cor_bar}}},
+            {"type": "value", "name": y_col_line, "position": "right", "axisLine": {"lineStyle": {"color": cor_line}},
+             "axisLabel": {"formatter": "R$ {value}"}}
+        ],
+        "series": [
+            {"name": y_col_bar, "type": "bar", "yAxisIndex": 0, "data": df_sorted[y_col_bar].tolist(), "barWidth": "40%", "itemStyle": {"color": cor_bar}},
+            {"name": y_col_line, "type": "line", "yAxisIndex": 1, "smooth": True, "lineStyle": {"width": 3, "color": cor_line}, "data": df_sorted[y_col_line].tolist()}
+        ]
+    }
+    st_echarts(options=options, height="490px", width="100%", key=chart_key)
+
+def component_plot_dual_axis_bar_line2(df, x_col, y_col_bar, y_col_line, name):
+    #chart_key = function_generate_chart_key(x_col, y_col_bar, y_col_line, name)
+    chart_key = 'component_plot_dual_axis_bar_line2'
     st.markdown(f"<h5 style='text-align: center; background-color: #ffb131; padding: 0.1em;'>{name}</h5>", unsafe_allow_html=True)
 
     df_sorted = df.copy()
@@ -483,10 +570,88 @@ def component_plot_dual_axis_bar_chart(df, x_col, y_col1, y_col2, y_label1, y_la
 
     st_echarts(options=options, height=height, width=width, key=chart_key)
 
+def component_plot_dual_axis_bar_chart2(df, x_col, y_col1, y_col2, y_label1, y_label2, name, height="490px", width="100%"):
+    #chart_key = function_generate_chart_key(x_col, y_col1, y_col2, name)
+    chart_key = 'component_plot_dual_axis_bar_chart2'
+    st.markdown(f"<h5 style='text-align: center; background-color: #ffb131; padding: 0.1em;'>{name}</h5>", unsafe_allow_html=True)
+
+    categorias = df[x_col].tolist()
+    dados1 = df[y_col1].fillna(0).astype(float).tolist()
+    dados2 = df[y_col2].fillna(0).astype(float).tolist()
+
+    if st.session_state.get("base_theme") == "dark":
+        text_color = "#ffffff"
+    else:
+        text_color = "#000000"
+
+    cor1, cor2 = "#ffb131", "#1e88e5"
+
+    options = {
+        "tooltip": {"trigger": "axis", "axisPointer": {"type": "shadow"}},
+        "legend": {"data": [y_label1, y_label2], "top": 30, "textStyle": {"color": text_color}},
+        "grid": {"left": "3%", "right": "4%", "bottom": "10%", "containLabel": True},
+        "xAxis": {"type": "category", "data": categorias, "axisLabel": {"rotate": 50}, "axisLine": {"lineStyle": {"color": text_color}}},
+        "yAxis": [
+            {"type": "value", "name": y_label1, "position": "left", "axisLine": {"lineStyle": {"color": cor1}}},
+            {"type": "value", "name": y_label2, "position": "right", "axisLine": {"lineStyle": {"color": cor2}},
+             "axisLabel": {"formatter": "R$ {value}"}}
+        ],
+        "series": [
+            {
+                "name": y_label1,
+                "type": "bar",
+                "data": dados1,
+                "yAxisIndex": 0,
+                "itemStyle": {"color": cor1}
+            },
+            {
+                "name": y_label2,
+                "type": "bar",
+                "data": dados2,
+                "yAxisIndex": 1,
+                "itemStyle": {"color": cor2}
+            }
+        ]
+    }
+
+    st_echarts(options=options, height=height, width=width, key=chart_key)
+
 
 def component_plot_line_chart(df, x_col, y_col, y_label, name, height="410px", width="100%"):
     #chart_key = function_generate_chart_key(x_col, y_col, name)
     chart_key = 'component_plot_line_chart'
+    st.markdown(f"<h5 style='text-align: center; background-color: #ffb131; padding: 0.1em;'>{name}</h5>", unsafe_allow_html=True)
+
+    categorias = df[x_col].tolist()
+    dados = df[y_col].fillna(0).astype(float).tolist()
+
+    if st.session_state.get("base_theme") == "dark":
+        text_color = "#ffffff"
+    else:
+        text_color = "#000000"
+
+    cor = "#ffb131"
+
+    options = {
+        "tooltip": {"trigger": "axis"},
+        "xAxis": {"type": "category", "data": categorias, "axisLabel": {"rotate": 45}, "axisLine": {"lineStyle": {"color": text_color}}},
+        "yAxis": {"type": "value", "name": y_label, "axisLine": {"lineStyle": {"color": cor}}},
+        "series": [
+            {
+                "data": dados,
+                "type": "line",
+                "smooth": True,
+                "itemStyle": {"color": cor},
+                "lineStyle": {"width": 3}
+            }
+        ]
+    }
+
+    st_echarts(options=options, height=height, width=width, key=chart_key)
+
+def component_plot_line_chart2(df, x_col, y_col, y_label, name, height="410px", width="100%"):
+    #chart_key = function_generate_chart_key(x_col, y_col, name)
+    chart_key = 'component_plot_line_chart2'
     st.markdown(f"<h5 style='text-align: center; background-color: #ffb131; padding: 0.1em;'>{name}</h5>", unsafe_allow_html=True)
 
     categorias = df[x_col].tolist()

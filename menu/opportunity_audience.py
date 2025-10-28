@@ -8,7 +8,8 @@ from utils.functions import *
 
 def BuildOpportunityAudience(avaregeCandidatesOpportunityMonth, avaregeCandidatesOpportunityWeek, avaregeCandidatesByArtist):
 
-    with st.expander("Candidaturas Mensais"): 
+    with st.expander("Candidaturas Mensais"):
+        avaregeCandidatesOpportunityMonth.drop(columns=['Candidaturas Do Período Anterior', 'Candidaturas Do Período Atual'], inplace=True)
         avaregeCandidatesOpportunityMonth_graph, len_df = component_plotDataframe(avaregeCandidatesOpportunityMonth, "Media de Candidatos por Oportunidade Mensal", key="avaregeCandidatesOpportunityMonth_key")
 
     component_plot_Stacked_Line_Chart(avaregeCandidatesOpportunityMonth_graph, "Data", ["Media por Vaga", "Total de Oportunidades", "Total de Candidaturas"], "Candidaturas Mensais", height="440px", width="100%")
@@ -58,7 +59,8 @@ def BuildOpportunityAudience(avaregeCandidatesOpportunityMonth, avaregeCandidate
     avaregeCandidatesByArtist2 = avarege_candidates_by_artist(prev_start, prev_end)
     row_card2 = st.columns([1,2,2,2,1])
     with row_card2[1]:
-        applications_artist_prev = function_format_number(avaregeCandidatesByArtist2['Candidaturas do Artista'].sum())
+        avaregeCandidatesOpportunityMonth_candidates = avarege_candidates_by_opportunity_month(day1_atual=start_date, day2_atual=end_date, day1_anterior=prev_start, day2_anterior=prev_end)
+        applications_artist_prev = function_format_number(avaregeCandidatesOpportunityMonth_candidates['Candidaturas Do Período Anterior'].unique()[0])
         component_custom_card("Total de Candidaturas", applications_artist_prev, f"Candidaturas {prev_start.strftime('%m/%Y')} a {prev_end.strftime('%m/%Y')}")
     
     with row_card2[2]:
@@ -77,7 +79,7 @@ def BuildOpportunityAudience(avaregeCandidatesOpportunityMonth, avaregeCandidate
 
     row_card = st.columns([1,2,2,2,1])
     with row_card[1]:
-        applications_artist = function_format_number(avaregeCandidatesByArtist['Candidaturas do Artista'].sum())
+        applications_artist = function_format_number(avaregeCandidatesOpportunityMonth_candidates['Candidaturas Do Período Atual'].unique()[0])
         component_custom_card("Total de Candidaturas", applications_artist, "Candidaturas")
         
     with row_card[2]:
@@ -115,7 +117,7 @@ class OpportunityAudience(Page):
         self.data = {}
         day = '2025-01-01' 
         day2 = '2025-07-31'
-        self.data['avaregeCandidatesOpportunityMonth'] = avarege_candidates_by_opportunity_month()
+        self.data['avaregeCandidatesOpportunityMonth'] = avarege_candidates_by_opportunity_month(day1_atual='2025-09-20', day2_atual='2025-10-20', day1_anterior='2025-08-20', day2_anterior='2025-09-20')
         self.data['avaregeCandidatesOpportunityWeek'] = avarege_candidates_by_opportunity_week()
         self.data['avaregeCandidatesByArtist'] = avarege_candidates_by_artist(day, day2)
         
