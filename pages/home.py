@@ -22,7 +22,7 @@ def render():
     col3.button(label="Logout", on_click=logout)
     
     component_effect_underline()
-    st.write('## Assinatura de Artistas')
+    st.write('## Oportunidades')
     st.markdown('<div class="full-width-line-white"></div>', unsafe_allow_html=True)
     st.markdown('<div class="full-width-line-black"></div>', unsafe_allow_html=True)
 
@@ -44,7 +44,7 @@ if __name__ == "__main__":
     if 'jwt_token' not in st.session_state:
         st.switch_page("main.py")
     
-    st.set_page_config(page_title="Home | Assinatura de Artistas",page_icon="./assets/imgs/eshows-logo100x100.png", layout="wide")
+    st.set_page_config(page_title="Home | Oportunidades",page_icon="./assets/imgs/eshows-logo100x100.png", layout="wide")
 
     component_hide_sidebar()
     component_fix_tab_echarts()

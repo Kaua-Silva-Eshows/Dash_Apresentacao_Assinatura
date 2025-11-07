@@ -4,7 +4,7 @@ from st_aggrid import AgGrid, GridOptionsBuilder
 from streamlit_echarts import st_echarts
 import pandas as pd
 
-from utils.functions import function_generate_chart_key
+from utils.functions import function_format_number, function_generate_chart_key
 
 def component_hide_sidebar():
     st.markdown(""" 
@@ -289,7 +289,7 @@ def component_plot_Stacked_Line_Chart(df, x_col, y_cols, name, height="500px", w
     
     st_echarts(options=options, height=height, width=width, key=chart_key)
 
-def component_plot_DualAxis_Chart(df, x_col, y_col_bar, y_col_line, y_col_line2, name, height="470px", width="100%"):
+def component_plot_DualAxis_Chart(df, x_col, y_col_bar, y_col_bar2, y_col_line, y_col_line2, y_col_line3, name, height="470px", width="100%"):
     st.markdown(
         f"<h5 style='text-align: center; background-color: #ffb131; padding: 0.1em;'>{name}</h5>",
         unsafe_allow_html=True
@@ -307,16 +307,16 @@ def component_plot_DualAxis_Chart(df, x_col, y_col_bar, y_col_line, y_col_line2,
 
     text_color = "#ffffff" if st.session_state.get("base_theme") == "dark" else "#000000"
 
-    colors = ["#1e88e5", "#ffb131", "#43a047"]  # azul, amarelo, verde
+    colors = ["#1e88e5", "#fffb00", "#ffb131", "#f30000", "#ff3c00"]
 
     options = {
-        "color": colors[:3],
+        "color": colors[:5],
         "tooltip": {"trigger": "axis", "axisPointer": {"type": "cross"}},
-        "legend": {"data": [y_col_bar, y_col_line, y_col_line2], "top": 30, "textStyle": {"color": text_color}},
+        "legend": {"data": [y_col_bar, y_col_bar2, y_col_line, y_col_line2, y_col_line3], "top": 30, "textStyle": {"color": text_color}},
         "xAxis": {"type": "category", "data": x_labels, "axisLabel": {"rotate": 45}, "axisLine": {"lineStyle": {"color": text_color}}},
         "yAxis": [
-            {"type": "value", "name": y_col_bar, "position": "left", "axisLine": {"lineStyle": {"color": colors[0]}}},
-            {"type": "value", "name": f"{y_col_line} / {y_col_line2}", "position": "right", "axisLine": {"lineStyle": {"color": colors[1]}}}
+            {"type": "value", "name": f"{y_col_bar} / {y_col_bar2}", "position": "left", "axisLine": {"lineStyle": {"color": colors[0]}}},
+            {"type": "value", "name": f"{y_col_line} / {y_col_line2} /\n {y_col_line3}", "position": "right", "axisLine": {"lineStyle": {"color": colors[1]}}}
         ],
         "series": [
             {
@@ -324,6 +324,13 @@ def component_plot_DualAxis_Chart(df, x_col, y_col_bar, y_col_line, y_col_line2,
                 "type": "bar",
                 "yAxisIndex": 0,
                 "data": df_sorted[y_col_bar].fillna(0).astype(float).tolist(),
+                "barWidth": "40%"
+            },
+            {
+                "name": y_col_bar2,
+                "type": "bar",
+                "yAxisIndex": 0,
+                "data": df_sorted[y_col_bar2].fillna(0).astype(float).tolist(),
                 "barWidth": "40%"
             },
             {
@@ -337,10 +344,18 @@ def component_plot_DualAxis_Chart(df, x_col, y_col_bar, y_col_line, y_col_line2,
             {
                 "name": y_col_line2,
                 "type": "line",
-                "yAxisIndex": 1,  # usa o mesmo eixo da direita
+                "yAxisIndex": 1,
                 "smooth": True,
-                "lineStyle": {"width": 3, "type": "dashed"},
+                "lineStyle": {"width": 3},
                 "data": df_sorted[y_col_line2].fillna(0).astype(float).tolist()
+            },
+            {
+                "name": y_col_line3,
+                "type": "line",
+                "yAxisIndex": 1,  
+                "smooth": True,
+                "lineStyle": {"width": 3},
+                "data": df_sorted[y_col_line3].fillna(0).astype(float).tolist()
             }
         ]
     }
@@ -681,7 +696,6 @@ def component_plot_line_chart2(df, x_col, y_col, y_label, name, height="410px", 
 
     st_echarts(options=options, height=height, width=width, key=chart_key)
 
-
 def component_custom_card(title, value, subtitle=""):
     if st.session_state.get("base_theme") == "dark":
         text_color = "#ffffff"
@@ -710,3 +724,81 @@ def component_custom_card(title, value, subtitle=""):
     </div>
     """
     st.markdown(card_html, unsafe_allow_html=True)
+
+def component_stacked_chart(df, mes_col, motivo_col, qtd_col, name, date_fmt="%m/%Y", height="475px"):
+    #chart_key = function_generate_chart_key(x_col, y_col, name)
+    chart_key = 'component_stacked_chart'
+    st.markdown(f"<h5 style='text-align: center; background-color: #ffb131; padding: 0.1em;'>{name}</h5>", unsafe_allow_html=True)
+
+    # --- Validação básica ---
+    for col in [mes_col, motivo_col, qtd_col]:
+        if col not in df.columns:
+            st.error(f"Coluna '{col}' não encontrada no DataFrame.")
+            return
+
+    df_copy = df.copy()
+    try:
+        df_copy["_mes_dt"] = pd.to_datetime(df_copy[mes_col], format=date_fmt)
+    except Exception:
+        df_copy["_mes_dt"] = pd.to_datetime(df_copy[mes_col], errors="coerce")
+
+    df_copy = df_copy.sort_values("_mes_dt")
+
+    # --- Pivot table ---
+    pivot_df = df_copy.pivot_table(
+        index=mes_col,
+        columns=motivo_col,
+        values=qtd_col,
+        aggfunc="sum",
+        fill_value=0
+    )
+
+    # --- Ordena eixo X cronologicamente ---
+    month_order = (
+        df_copy[[mes_col, "_mes_dt"]]
+        .drop_duplicates(subset=[mes_col])
+        .sort_values("_mes_dt")[mes_col]
+        .tolist()
+    )
+    pivot_df = pivot_df.reindex(index=month_order, fill_value=0)
+
+    # --- Ordena motivos pelo valor médio (menor → maior) ---
+    motivo_order = pivot_df.mean().sort_values(ascending=True).index.tolist()
+    pivot_df = pivot_df[motivo_order]
+
+    # --- Cores e tema ---
+    if st.session_state.get("base_theme") == "dark":
+        text_color = "#ffffff"
+        axis_color = "#ffffff"
+    else:
+        text_color = "#000000"
+        axis_color = "#000000"
+
+    # --- Monta séries ---
+    series = []
+    for i, motivo in enumerate(pivot_df.columns):
+        data_points = [int(v) if v > 0 else None for v in pivot_df[motivo].tolist()]
+        series.append({
+            "name": motivo,
+            "type": "bar",
+            "stack": "total",
+            "barWidth": "60%",
+            "label": {"show": True, "formatter": "{c}", "fontSize": 10, "color": text_color},
+            "emphasis": {"focus": "series"},
+            "data": data_points
+        })
+
+    # --- Opções do gráfico ---
+    option = {
+        "tooltip": {"trigger": "axis", "axisPointer": {"type": "shadow"}, "order": "valueDesc"},
+        "legend": {"type": "scroll", "textStyle": {"color": text_color}, "data": motivo_order},
+        "xAxis": {"type": "category", "data": pivot_df.index.tolist(),
+                  "axisLabel": {"rotate": 45, "color": text_color},
+                  "axisLine": {"lineStyle": {"color": axis_color}}},
+        "yAxis": {"type": "value",
+                  "axisLabel": {"color": text_color},
+                  "axisLine": {"lineStyle": {"color": axis_color}}},
+        "series": series,
+    }
+
+    st_echarts(options=option, height=height, key=chart_key)

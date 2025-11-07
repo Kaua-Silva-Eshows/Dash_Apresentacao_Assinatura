@@ -57,38 +57,39 @@ def BuildOpportunityAudience(avaregeCandidatesOpportunityMonth, avaregeCandidate
     )
 
     avaregeCandidatesByArtist2 = avarege_candidates_by_artist(prev_start, prev_end)
-    row_card2 = st.columns([1,2,2,2,1])
-    with row_card2[1]:
+    row_card2 = st.columns([1,1,1,1])
+    with row_card2[0]:
         avaregeCandidatesOpportunityMonth_candidates = avarege_candidates_by_opportunity_month(day1_atual=start_date, day2_atual=end_date, day1_anterior=prev_start, day2_anterior=prev_end)
         applications_artist_prev = function_format_number(avaregeCandidatesOpportunityMonth_candidates['Candidaturas Do Período Anterior'].unique()[0])
         component_custom_card("Total de Candidaturas", applications_artist_prev, f"Candidaturas {prev_start.strftime('%m/%Y')} a {prev_end.strftime('%m/%Y')}")
-    
-    with row_card2[2]:
+    with row_card2[1]:
         applications_greater_35 = function_format_number(avaregeCandidatesByArtist['Candidatos Ativos'].unique()[0])
-        component_custom_card("Artistas com Mais de 35 Candidaturas", applications_greater_35, "01/2025 a 20/09/2025")
-
-    with row_card2[3]:
+        component_custom_card("Artistas com Mais de 35 Candidaturas", applications_greater_35, f"Artistas {prev_start.strftime('%m/%Y')} a {prev_end.strftime('%m/%Y')}")
+    with row_card2[2]:
         component_custom_card("Artistas Distintos", avaregeCandidatesByArtist2['ARTISTA'].nunique(), f"Artistas Distintos {prev_start.strftime('%m/%Y')} a {prev_end.strftime('%m/%Y')}")
-    
+    with row_card2[3]:
+        component_custom_card("Quantos Tiveram Shows", (avaregeCandidatesByArtist2['Shows que Aconteceram'] > 1).sum(), f"Shows {prev_start.strftime('%m/%Y')} a {prev_end.strftime('%m/%Y')}")
+
     with st.expander("Tabela Do periodo Anterior"):
-        avaregeCandidatesByArtist2.drop(columns=['Candidatos Ativos', 'Candidatos Ativos 2'], inplace=True)
+        avaregeCandidatesByArtist2.drop(columns=['Candidatos Ativos'], inplace=True)
         component_plotDataframe(avaregeCandidatesByArtist2, "Media de Candidaturas por Artista", key="avaregeCandidatesByArtist2")
 
 
     avaregeCandidatesByArtist = avarege_candidates_by_artist(start_date, end_date)
 
-    row_card = st.columns([1,2,2,2,1])
-    with row_card[1]:
+    row_card = st.columns([1,1,1,1])
+    with row_card[0]:
         applications_artist = function_format_number(avaregeCandidatesOpportunityMonth_candidates['Candidaturas Do Período Atual'].unique()[0])
         component_custom_card("Total de Candidaturas", applications_artist, "Candidaturas")
-        
+    with row_card[1]:
+        applications_greater_35 = function_format_number(avaregeCandidatesByArtist['Candidatos Ativos'].unique()[0])
+        component_custom_card("Artistas com Mais de 35 Candidaturas", applications_greater_35, "Artistas")
     with row_card[2]:
-        applications_greater_35 = function_format_number(avaregeCandidatesByArtist['Candidatos Ativos 2'].unique()[0])
-        component_custom_card("Artistas com Mais de 35 Candidaturas", applications_greater_35, "20/09/2025 a Hoje")
-    with row_card[3]:
         component_custom_card("Artistas Distintos", avaregeCandidatesByArtist['ARTISTA'].nunique(), "Artistas Distintos")
+    with row_card[3]:
+        component_custom_card("Quantos Tiveram Shows", (avaregeCandidatesByArtist['Shows que Aconteceram'] > 1).sum(), "Shows")
     
-    avaregeCandidatesByArtist.drop(columns=['Candidatos Ativos', 'Candidatos Ativos 2'], inplace=True)
+    avaregeCandidatesByArtist.drop(columns=['Candidatos Ativos'], inplace=True)
     component_plotDataframe(avaregeCandidatesByArtist, "Media de Candidaturas por Artista", key="avaregeCandidatesByArtist")
 
     row = st.columns(2)

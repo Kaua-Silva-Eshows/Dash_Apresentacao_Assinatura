@@ -1,3 +1,4 @@
+from datetime import datetime
 import hashlib
 import numpy as np
 import pandas as pd
@@ -154,3 +155,16 @@ def function_format_number(value):
     if s.endswith(",00"):
         s = s[:-3]
     return s
+
+def function_date_select_structure(row_name, num_coluns, legend1, legend2):
+    row_name = st.columns(num_coluns)
+    key= f"date_select_{row_name}_{num_coluns}"
+    with row_name[1]:
+        date = st.date_input(f"{legend1}", value=datetime(2024, 1, 1), key=f"{key}_1")
+    with row_name[4]:
+        date2 = st.date_input(f"{legend2}", value=datetime(2025, 1, 1), key=f"{key}_2")
+    
+    date = str(date)[:7]
+    date2 = str(date2)[:7]
+    
+    return date, date2

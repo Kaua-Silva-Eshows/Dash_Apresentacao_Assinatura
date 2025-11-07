@@ -48,7 +48,7 @@ def main():
 
 def show_login_page():
     col1, col2 = st.columns([4,2])
-    col1.write("## Assinatura de Artistas")
+    col1.write("## Oportunidades")
     col2.image("./assets/imgs/eshows-logo.png", width=100)
     userName = st.text_input(label="", value="", placeholder="login")
     userPassword = st.text_input(label="", value="", placeholder="Senha",type="password")
