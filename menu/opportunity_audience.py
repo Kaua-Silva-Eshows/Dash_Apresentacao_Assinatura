@@ -116,11 +116,9 @@ def BuildOpportunityAudience(avaregeCandidatesOpportunityMonth, avaregeCandidate
 class OpportunityAudience(Page):
     def render(self):
         self.data = {}
-        day = '2025-01-01' 
-        day2 = '2025-07-31'
         self.data['avaregeCandidatesOpportunityMonth'] = avarege_candidates_by_opportunity_month(day1_atual='2025-09-20', day2_atual='2025-10-20', day1_anterior='2025-08-20', day2_anterior='2025-09-20')
         self.data['avaregeCandidatesOpportunityWeek'] = avarege_candidates_by_opportunity_week()
-        self.data['avaregeCandidatesByArtist'] = avarege_candidates_by_artist(day, day2)
+        self.data['avaregeCandidatesByArtist'] = avarege_candidates_by_artist(day1_atual='2025-09-20', day2_atual='2025-10-20')
         
         BuildOpportunityAudience(self.data['avaregeCandidatesOpportunityMonth'],
                    self.data['avaregeCandidatesOpportunityWeek'],
