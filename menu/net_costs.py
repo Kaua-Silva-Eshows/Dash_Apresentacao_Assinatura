@@ -7,6 +7,7 @@ from utils.functions import *
 
 
 def BuildNetCost(liquidValuePerTraining, liquidValuerPerStyle, liquidValuePerTraining2, liquidValuerPerStyle2):
+    st.title("📊 Valores Oportunidade")
     #st.write(liquidValuePerTraining)
     if st.session_state.get("base_theme") == "dark":
         text_color = "#ffffff"

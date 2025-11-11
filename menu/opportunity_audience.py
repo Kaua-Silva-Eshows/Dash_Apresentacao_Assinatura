@@ -8,6 +8,7 @@ from utils.functions import *
 
 def BuildOpportunityAudience(avaregeCandidatesOpportunityMonth, avaregeCandidatesOpportunityWeek, avaregeCandidatesByArtist):
 
+    st.title("📊 Audiência Oportunidade")
     with st.expander("Candidaturas Mensais"):
         avaregeCandidatesOpportunityMonth.drop(columns=['Candidaturas Do Período Anterior', 'Candidaturas Do Período Atual'], inplace=True)
         avaregeCandidatesOpportunityMonth_graph, len_df = component_plotDataframe(avaregeCandidatesOpportunityMonth, "Media de Candidatos por Oportunidade Mensal", key="avaregeCandidatesOpportunityMonth_key")

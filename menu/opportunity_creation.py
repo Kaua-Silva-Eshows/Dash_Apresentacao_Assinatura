@@ -8,7 +8,7 @@ from utils.functions import *
 
 
 def BuildOpportunityCreation(avaregeOpportunityCreatedMonth, avaregeOpportunityCreatedYear, recusedOpportunities, canceledOpportunities):
-
+    st.title("📊 Criação de Oportunidade")
     row_card = st.columns(4)
 
     with row_card[0]:
