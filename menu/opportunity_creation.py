@@ -35,7 +35,7 @@ def BuildOpportunityCreation(avaregeOpportunityCreatedMonth, avaregeOpportunityC
     opportunity_graph_merge = recusedOpportunities.merge(avaregeOpportunityCreatedMonth, on='Mes/Ano', how='right')
     component_plot_DualAxis_Chart(opportunity_graph_merge, x_col='Mes/Ano', y_col_bar='Oportunidades', y_col_bar2='QUANTIDADE RECUSA', y_col_line='Media em DIAS', y_col_line2= 'Media até Candidatura H', y_col_line3='Media até Aceite D', name='Total de Oportunidades com Média de Criação')
     st.markdown("---")
-    component_stacked_chart(canceledOpportunities, mes_col= 'Mes/Ano', motivo_col= 'MOTIVO', qtd_col= 'CANCELAMENTOS', name='Oportunidades Canceladas por Motivo')   
+    component_plot_stacked_chart(canceledOpportunities, mes_col= 'Mes/Ano', motivo_col= 'MOTIVO', qtd_col= 'CANCELAMENTOS', name='Oportunidades Canceladas por Motivo')   
 class OpportunityCreation(Page):
     def render(self):
         

@@ -46,10 +46,10 @@ def BuildNetCost(liquidValuePerTraining, liquidValuerPerStyle, liquidValuePerTra
 
     row_axis_bar_line = st.columns(2)
     with row_axis_bar_line[0]:
-        component_plot_dual_axis_bar_line(liquidValuePerTraining,x_col='FORMAÇÃO',y_col_bar='OPORTUNIDADES',y_col_line='Valor por H',name='Oportunidades e Méd. Valor por Hora 20/08 a 20/09')
+        component_plot_dual_axis_bar_line(liquidValuePerTraining,x_col='FORMAÇÃO',y_col_bar='OPORTUNIDADES',y_col_line='Valor por H', name='Oportunidades e Méd. Valor por Hora')
     
     with row_axis_bar_line[1]:
-        component_plot_dual_axis_bar_line2(liquidValuePerTraining2,x_col='FORMAÇÃO',y_col_bar='OPORTUNIDADES',y_col_line='Valor por H',name='Oportunidades e Méd. Valor por Hora 20/09 a 20/10')
+        component_plot_dual_axis_bar_line(liquidValuePerTraining2,x_col='FORMAÇÃO',y_col_bar='OPORTUNIDADES',y_col_line='Valor por H',name='Oportunidades e Méd. Valor por Hora')
 
     st.write('---')
     
@@ -58,9 +58,9 @@ def BuildNetCost(liquidValuePerTraining, liquidValuerPerStyle, liquidValuePerTra
     liquidValuePerTraining2 = liquid_value_per_training(date_dual_axis2)
     row_dual_axis_line = st.columns(2)
     with row_dual_axis_line[0]:
-        component_plot_dual_axis_line_chart(liquidValuePerTraining,x_col='FORMAÇÃO',y_col1='MEDIA POR FORMACAO',y_col2='Media de horas por show',y_label1='Valor Médio (R$)',y_label2='Horas Médias',name='Horas Méd. por Show e Valor Médio por Formação 20/09 a 20/10')
+        component_plot_dual_axis_line_chart(liquidValuePerTraining,x_col='FORMAÇÃO',y_col1='MEDIA POR FORMACAO',y_col2='Media de horas por show',y_label1='Valor Médio (R$)',y_label2='Horas Médias',name='Horas Méd. por Show e Valor Médio por Formação')
     with row_dual_axis_line[1]:    
-        component_plot_dual_axis_line_chart2(liquidValuePerTraining2,x_col='FORMAÇÃO',y_col1='MEDIA POR FORMACAO',y_col2='Media de horas por show',y_label1='Valor Médio (R$)',y_label2='Horas Médias',name='Horas Méd. por Show e Valor Médio por Formação 20/08 a 20/09')   
+        component_plot_dual_axis_line_chart(liquidValuePerTraining2,x_col='FORMAÇÃO',y_col1='MEDIA POR FORMACAO',y_col2='Media de horas por show',y_label1='Valor Médio (R$)',y_label2='Horas Médias',name='Horas Méd. por Show e Valor Médio por Formação')   
 
     st.write('---')
 
@@ -89,10 +89,10 @@ def BuildNetCost(liquidValuePerTraining, liquidValuerPerStyle, liquidValuePerTra
 
     row_dual_axis_bar = st.columns(2)
     with row_dual_axis_bar[0]:
-        component_plot_dual_axis_bar_chart(liquidValuerPerStyle_filtered,"Estilo", "Oportunidades", "Valor Total","Oportunidades", "Valor Total (R$)",f"Oportunidades e Valor Total Por Estilo")
+        component_plot_dual_axis_bar_chart(liquidValuerPerStyle_filtered,"Estilo", "Oportunidades", "Valor Total","Oportunidades", "Valor Total (R$)", "Oportunidades e Valor Total Por Estilo")
 
     with row_dual_axis_bar[1]:
-        component_plot_dual_axis_bar_chart2(liquidValuerPerStyle_filtered2,"Estilo", "Oportunidades", "Valor Total","Oportunidades", "Valor Total (R$)",f"Oportunidades e Valor Total Por Estilo")
+        component_plot_dual_axis_bar_chart(liquidValuerPerStyle_filtered2,"Estilo", "Oportunidades", "Valor Total","Oportunidades", "Valor Total (R$)", "Oportunidades e Valor Total Por Estilo")
         
     st.write('---')
 
@@ -102,11 +102,11 @@ def BuildNetCost(liquidValuePerTraining, liquidValuerPerStyle, liquidValuePerTra
     row_line_chart = st.columns(2)
     with row_line_chart[0]:
         liquidValuerPerStyle_filtered = liquidValuerPerStyle_filtered[liquidValuerPerStyle_filtered['Estilo'].isin(style_filter)]
-        component_plot_line_chart(liquidValuerPerStyle_filtered, "Estilo", "Media por Show", "Media por Show", "Valor Méd. Por Show e Estilo 20/08 a 20/09")
+        component_plot_line_chart(liquidValuerPerStyle_filtered, "Estilo", "Media por Show", "Media por Show", "Valor Méd. Por Show e Estilo")
     
     with row_line_chart[1]:
         liquidValuerPerStyle_filtered2 = liquidValuerPerStyle_filtered2[liquidValuerPerStyle_filtered2['Estilo'].isin(style_filter)]
-        component_plot_line_chart2(liquidValuerPerStyle_filtered2, "Estilo", "Media por Show", "Media por Show", "Valor Méd. Por Show e Estilo 20/09 a 20/10")
+        component_plot_line_chart(liquidValuerPerStyle_filtered2, "Estilo", "Media por Show", "Media por Show", "Valor Méd. Por Show e Estilo")
 
 class NetCost(Page):
     def render(self):
